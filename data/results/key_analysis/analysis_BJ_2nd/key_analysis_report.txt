@@ -1,0 +1,46 @@
+KEY DISTRIBUTION ANALYSIS REPORT
+==================================================
+
+Analysis Date: 2025-08-21 16:06:32.682760
+Real Music File: BJ_keys_madmom_15s_87_normalized.txt
+Generated Music File: BJ_keys_2nd_madmon.txt
+
+METRICS SUMMARY:
+--------------------
+Total Real Keys: 87 (Coverage: 0.958)
+Total Gen Keys: 87 (Coverage: 0.833)
+Real Entropy: 4.237 (Diversity: 0.924)
+Gen Entropy: 3.848 (Diversity: 0.839)
+KL Divergence: 3.299
+Overlapping Area: 0.655
+Real Rare Key Rate: 0.609
+Gen Rare Key Rate: 0.650
+
+DETAILED DISTRIBUTIONS:
+-------------------------
+Key          Real     Generated  Difference
+---------------------------------------------
+A major      0.023    0.103      0.080     
+A minor      0.057    0.011      0.046     
+Ab major     0.023    0.000      0.023     
+Ab minor     0.057    0.011      0.046     
+B major      0.092    0.069      0.023     
+B minor      0.080    0.034      0.046     
+Bb major     0.011    0.011      0.000     
+Bb minor     0.011    0.000      0.011     
+C major      0.023    0.023      0.000     
+C minor      0.057    0.011      0.046     
+C# minor     0.046    0.046      0.000     
+D major      0.046    0.195      0.149     
+D minor      0.011    0.057      0.046     
+Db major     0.023    0.011      0.011     
+E major      0.080    0.069      0.011     
+E minor      0.023    0.034      0.011     
+Eb major     0.000    0.011      0.011     
+Eb minor     0.046    0.046      0.000     
+F major      0.046    0.034      0.011     
+F minor      0.057    0.000      0.057     
+F# major     0.103    0.115      0.011     
+F# minor     0.011    0.046      0.034     
+G major      0.057    0.057      0.000     
+G minor      0.011    0.000      0.011     

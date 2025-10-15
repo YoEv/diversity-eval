@@ -1,0 +1,103 @@
+{
+  "timestamp": "2025-10-15T02:35:42.434537",
+  "issue": "Spotify preview_url deprecated",
+  "metadata_features": [
+    "danceability",
+    "energy",
+    "key",
+    "loudness",
+    "mode",
+    "speechiness",
+    "acousticness",
+    "instrumentalness",
+    "liveness",
+    "valence",
+    "tempo",
+    "duration_ms"
+  ],
+  "alternatives": {
+    "免费音频数据集": [
+      {
+        "name": "Free Music Archive (FMA)",
+        "description": "大型免费音乐数据集，包含多种流派",
+        "url": "https://github.com/mdeff/fma",
+        "size": "~1000小时音频",
+        "license": "Creative Commons"
+      },
+      {
+        "name": "Million Song Dataset",
+        "description": "百万歌曲的音频特征数据",
+        "url": "http://millionsongdataset.com/",
+        "size": "1M songs metadata",
+        "license": "研究用途"
+      },
+      {
+        "name": "GTZAN Dataset",
+        "description": "音乐流派分类数据集",
+        "url": "http://marsyas.info/downloads/datasets.html",
+        "size": "1000首歌曲，10个流派",
+        "license": "研究用途"
+      }
+    ],
+    "API服务": [
+      {
+        "name": "YouTube Music API",
+        "description": "可能提供音频预览",
+        "url": "https://developers.google.com/youtube/v3",
+        "note": "需要检查ToS"
+      },
+      {
+        "name": "SoundCloud API",
+        "description": "部分歌曲有预览",
+        "url": "https://developers.soundcloud.com/",
+        "note": "有免费tier"
+      },
+      {
+        "name": "Last.fm API",
+        "description": "音乐元数据和推荐",
+        "url": "https://www.last.fm/api",
+        "note": "主要是元数据"
+      }
+    ],
+    "音乐生成": [
+      {
+        "name": "MusicGen (Meta)",
+        "description": "AI音乐生成模型",
+        "url": "https://github.com/facebookresearch/musicgen",
+        "note": "可生成多样化音乐样本"
+      },
+      {
+        "name": "Jukebox (OpenAI)",
+        "description": "神经网络音乐生成",
+        "url": "https://github.com/openai/jukebox",
+        "note": "高质量音乐生成"
+      }
+    ]
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "title": "收集Spotify元数据",
+      "description": "使用Spotify API收集歌曲的音频特征和元数据",
+      "output": "包含音频特征的CSV文件"
+    },
+    {
+      "step": 2,
+      "title": "下载免费音频数据集",
+      "description": "从FMA或其他免费数据集获取实际音频文件",
+      "output": "音频文件 + 元数据"
+    },
+    {
+      "step": 3,
+      "title": "特征匹配",
+      "description": "根据音频特征匹配Spotify数据和免费数据集",
+      "output": "匹配的音频-元数据对"
+    },
+    {
+      "step": 4,
+      "title": "多样性分析",
+      "description": "基于音频特征进行多样性评估",
+      "output": "多样性评估报告"
+    }
+  ]
+}

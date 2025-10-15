@@ -1,0 +1,17 @@
+Collecting spotipy
+  Using cached spotipy-2.25.1-py3-none-any.whl.metadata (5.1 kB)
+Collecting redis>=3.5.3 (from spotipy)
+  Using cached redis-6.4.0-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: requests>=2.25.0 in /home/evev/miniconda3/envs/spotifyapi/lib/python3.9/site-packages (from spotipy) (2.32.5)
+Requirement already satisfied: urllib3>=1.26.0 in /home/evev/miniconda3/envs/spotifyapi/lib/python3.9/site-packages (from spotipy) (2.5.0)
+Collecting async-timeout>=4.0.3 (from redis>=3.5.3->spotipy)
+  Using cached async_timeout-5.0.1-py3-none-any.whl.metadata (5.1 kB)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/evev/miniconda3/envs/spotifyapi/lib/python3.9/site-packages (from requests>=2.25.0->spotipy) (3.4.3)
+Requirement already satisfied: idna<4,>=2.5 in /home/evev/miniconda3/envs/spotifyapi/lib/python3.9/site-packages (from requests>=2.25.0->spotipy) (3.10)
+Requirement already satisfied: certifi>=2017.4.17 in /home/evev/miniconda3/envs/spotifyapi/lib/python3.9/site-packages (from requests>=2.25.0->spotipy) (2025.8.3)
+Using cached spotipy-2.25.1-py3-none-any.whl (31 kB)
+Using cached redis-6.4.0-py3-none-any.whl (279 kB)
+Using cached async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Installing collected packages: async-timeout, redis, spotipy
+
+Successfully installed async-timeout-5.0.1 redis-6.4.0 spotipy-2.25.1

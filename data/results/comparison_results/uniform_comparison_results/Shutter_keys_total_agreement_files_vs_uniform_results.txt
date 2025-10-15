@@ -1,0 +1,20 @@
+Comparison: Uniform Distribution vs Shutter_keys_total_agreement_files.txt
+================================================================================
+
+Dataset Statistics:
+- Uniform Distribution: 120 pieces
+- Shutter_keys_total_agreement_files.txt: 146 pieces
+
+Key Distribution Metrics:
+- Uniform Entropy: 4.5850
+- Dataset Entropy: 4.1160
+- KL Divergence (Uniform → Dataset): 1.5459
+- Overlapping Area: 0.6758
+- Rare Keys (Uniform): 1.0000
+- Rare Keys (Dataset): 0.6957
+
+Interpretation:
+- Higher entropy indicates more uniform key distribution
+- Lower KL divergence indicates similarity to uniform distribution
+- Higher overlapping area indicates better coverage similarity
+- Lower rare key rate indicates better key diversity

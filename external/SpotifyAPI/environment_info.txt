@@ -1,0 +1,22 @@
+# Spotify API Environment Information
+Environment Name: spotifyapi
+Python Version: 3.9
+Created: Wed Oct 15 01:34:55 AM UTC 2025
+
+## Installed Packages:
+- pandas (data manipulation)
+- numpy (numerical computing)
+- requests (HTTP requests)
+- spotipy (Spotify Web API)
+- librosa (audio analysis)
+- soundfile (audio I/O)
+- h5py (HDF5 data format)
+- scipy (scientific computing)
+- scikit-learn (machine learning)
+- numba (JIT compilation for librosa)
+
+## Activation Command:
+conda activate spotifyapi
+
+## Deactivation Command:
+conda deactivate

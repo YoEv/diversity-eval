@@ -1,0 +1,43 @@
+{
+  "spotify_api": {
+    "client_id": "c03779e9cb214e8994c3adff6b58954c",
+    "client_secret": "5a547dec11be4e6aaaacc13493157f14",
+    "description": "Get these from https://developer.spotify.com/dashboard"
+  },
+  "api_settings": {
+    "rate_limit_delay": 0.5,
+    "batch_size": 10,
+    "max_retries": 5,
+    "timeout": 30
+  },
+  "feature_extraction": {
+    "include_audio_features": true,
+    "include_artist_info": true,
+    "include_album_info": true,
+    "include_popularity": true
+  },
+  "preview_audio": {
+    "download_enabled": true,
+    "audio_format": "mp3",
+    "quality": "preview",
+    "timeout": 30,
+    "output_directory": "../data/preview_audio"
+  },
+  "diversity_analysis": {
+    "feature_categories": [
+      "tempo",
+      "energy",
+      "valence",
+      "danceability",
+      "acousticness",
+      "instrumentalness"
+    ],
+    "audio_features": [
+      "spectral_centroid",
+      "mfcc",
+      "chroma",
+      "tempo",
+      "harmonic_percussive_ratio"
+    ]
+  }
+}

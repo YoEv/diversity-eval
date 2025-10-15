@@ -1,0 +1,6 @@
+Collecting h5py
+  Using cached h5py-3.14.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.7 kB)
+Requirement already satisfied: numpy>=1.19.3 in /home/evev/miniconda3/envs/spotifyapi/lib/python3.9/site-packages (from h5py) (1.22.3)
+Using cached h5py-3.14.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.6 MB)
+Installing collected packages: h5py
+Successfully installed h5py-3.14.0

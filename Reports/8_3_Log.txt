@@ -1,0 +1,22 @@
+Start to generate melody, three different times with the input Agreed_Keys_Dataset.
+
+
+Next Step
+Many ways to genrate:
+    - Compare generated in many times, eg 3 times 
+    - Compare top-k
+    - Compare gen from different models 
+    - Compare different durations
+Maybe when matching key results, need to consider more :
+    Missing harmonic relationships:
+    - Relative major/minor pairs (e.g., C major ↔ A minor)
+    - Parallel major/minor (e.g., C major ↔ C minor)
+    - Circle of fifths relationships (e.g., C major → G major → D major)
+    - Modal relationships
+Searched for all audio library - 
+    TorchAudio - DL 
+    Essentia - MIR
+    Aubio - MIR
+    nnAudio - DL
+    AudioFlux - Spectrals
+Search for more metrics - next to do 

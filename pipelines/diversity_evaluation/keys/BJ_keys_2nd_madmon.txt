@@ -1,0 +1,90 @@
+Musical Key Detection Results (Madmom)
+===================================
+
+028.wav: D major
+056.wav: A minor
+003.wav: D major
+18.wav: F# major
+Enjoying the classic Peking Opera 'Drunken Concubine' at Mid Autumn Festival_15s_musicgen_15s.wav: E minor
+034.wav: D minor
+015.wav: G major
+050.wav: A major
+009.wav: B minor
+014.wav: D major
+01.wav: F# major
+051.wav: D major
+042.wav: Eb major
+052.wav: A major
+039.wav: A major
+038.wav: F# major
+007.wav: A major
+12.wav: B major
+035.wav: F# minor
+053.wav: G major
+14.wav: B major
+012.wav: B minor
+17.wav: B minor
+045.wav: D# minor
+27.wav: B major
+07.wav: C major
+037.wav: F# minor
+036.wav: C major
+25.wav: E major
+043.wav: E minor
+023.wav: D# minor
+13.wav: C minor
+Purple Bamboo Melody (Zi Zhu Diao)_15s_musicgen_15s.wav: D major
+20.wav: D major
+025.wav: B major
+006.wav: D major
+033.wav: D minor
+26.wav: E major
+029.wav: F major
+001.wav: D major
+004.wav: D major
+16.wav: D major
+010.wav: G major
+002.wav: F# major
+016.wav: D minor
+05.wav: E major
+Beijing Opera Tune (Jing Diao)_15s_musicgen_15s.wav: D minor
+020.wav: C# minor
+11.wav: Bb major
+044.wav: G# minor
+21.wav: E major
+018.wav: Db major
+The Beautiful South Yangtze (Jiang Nan Hao)_15s_musicgen_15s.wav: D major
+040.wav: D major
+24.wav: B major
+057.wav: F# major
+04.wav: A major
+005.wav: D major
+030.wav: D# minor
+09.wav: A major
+031.wav: A major
+046.wav: F# minor
+08.wav: F major
+032.wav: F major
+027.wav: F# major
+017.wav: D major
+28.wav: F# major
+049.wav: A major
+013.wav: F# minor
+02.wav: A major
+019.wav: D major
+03.wav: B major
+22.wav: F# major
+048.wav: D major
+10.wav: E major
+055.wav: C# minor
+047.wav: G major
+19.wav: F# major
+008.wav: F# major
+021.wav: D minor
+011.wav: D# minor
+054.wav: D major
+06.wav: E major
+041.wav: C# minor
+15.wav: C# minor
+022.wav: G major
+Pick Tea and Catch Butterfly_15s_musicgen_15s.wav: E minor

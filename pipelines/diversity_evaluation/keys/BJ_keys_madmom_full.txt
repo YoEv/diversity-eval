@@ -1,0 +1,95 @@
+Musical Key Detection Results (Madmom)
+===================================
+
+Modern18_20969/17. [马永安饰雷刚，选自《杜鹃山》] 大火熊熊.mp3: D major
+Modern18_20969/06. [钱浩饰李玉和，选自《红灯记》] 穷人的孩子早当家.mp3: E major
+Modern18_20969/20. [刘长瑜饰李铁梅，选自《红灯记》] 光辉照儿永向前.mp3: A major
+Modern18_20969/12. [刘长瑜饰李铁梅，选自《红灯记》] 做人要做这样的人.mp3: E major
+Modern18_20969/22. [万一英饰沙奶奶，选自《沙家浜》] 八一三.mp3: F# major
+Modern18_20969/04. [杨春霞饰柯湘，选自《杜鹃山》] 血的教训.mp3: A major
+Modern18_20969/27. [马长礼饰刁德一，洪雪飞饰阿庆嫂，周和桐饰胡传魁，选自《沙家浜》] 智斗.mp3: E major
+Modern18_20969/15. [李炳淑饰演江水英，选自《龙江颂》] 为人类求解放奋斗终身.mp3: A major
+Modern18_20969/25. [方荣翔饰演王团长，选自《奇袭白虎团》] 趁夜晚出奇兵.mp3: E major
+Modern18_20969/03. [杜近芳饰吴清华，选自《红色娘子军》] 打不死的吴清华.mp3: E major
+Modern18_20969/19. [刘长瑜饰李铁梅，选自《红灯记》] 都有一颗红亮的心.mp3: F# major
+Modern18_20969/23. [齐淑芳饰演常宝，选自《智取威虎山》] 只盼着深山出太阳.mp3: B major
+Modern18_20969/08. [高玉倩饰李奶奶，选自《红灯记》] 血债还要血来偿.mp3: G major
+Modern18_20969/24. [杨春霞饰柯湘，选自《杜鹃山》] 家住安源.mp3: E major
+Modern18_20969/18. [童祥苓饰杨子荣，选自《智取威虎山》] 除夕夜.mp3: E major
+Modern18_20969/01. [童祥苓饰杨子荣，选自《智取威虎山》] 胸有朝阳.mp3: E major
+Modern18_20969/05. [钱浩饰李玉刚，选自《红灯记》] 雄心壮志冲云天.mp3: E major
+Modern18_20969/28. [杨春霞饰柯湘，选自《杜鹃山》] 乱云飞.mp3: A major
+Modern18_20969/21. [钱浩饰李玉刚，选自《红灯记》] 浑身是胆雄赳赳.mp3: B major
+Modern18_20969/14. [谭元寿饰演郭建光，选自《沙家浜》] 祖国的好山河.mp3: E major
+Modern18_20969/11. [李长春饰演高志扬，选自《海港》] 满怀豪情.mp3: Eb major
+Modern18_20969/16. [李丽芳饰方海珍，选自《海港》] 毛泽东思想东风传送.mp3: G major
+Modern18_20969/10. [童祥苓饰杨子荣，选自《智取威虎山》] 管叫山河换新装.mp3: E major
+Modern18_20969/13. [李长春饰高志扬，选自《海港》] 千难万险.mp3: C minor
+Modern18_20969/02. [童祥苓饰杨子荣，选自《智取威虎山》] 迎来春色换人间.mp3: E major
+Modern18_20969/09. [刘长瑜饰李铁梅，选自《红灯记》] 打不尽豺狼决不下战场.mp3: A major
+Modern18_20969/07. [杜近芳饰吴清华，选自《红色娘子军》] 找见了救星.mp3: Eb major
+Modern18_20969/26. [沈金波饰参谋长，选自《智取威虎山》] 誓把反动派一扫光.mp3: E major
+Selected/SpotiDown.App - Moon Reflecting On the Three Lakes - Traditional.mp3: C major
+Selected/Enjoying the classic Peking Opera 'Drunken Concubine' at Mid Autumn Festival.mp3: G major
+Selected/The Beautiful South Yangtze (Jiang Nan Hao).mp3: G major
+Selected/Purple Bamboo Melody (Zi Zhu Diao).mp3: D major
+Selected/Beijing Opera Tune (Jing Diao).mp3: F major
+Selected/SpotiDown.App - Beijing Opera Tune - Gu Guanren.mp3: F major
+Selected/Pick Tea and Catch Butterfly.mp3: E minor
+Meng_21001/041.探阴山 扶大宋锦华夷赤心肝胆 - 孟广禄.mp3: G major
+Meng_21001/025.牧虎关 高老爷来在牧虎关 - 孟广禄.mp3: F# major
+Meng_21001/021.二进宫 说什么学韩信命丧未央 - 孟广禄.mp3: F# major
+Meng_21001/017.大保国 先王爷坐江山风调雨顺 - 孟广禄.mp3: F major
+Meng_21001/043.探阴山 食王禄理朝纲忠心可表 - 孟广禄.mp3: F# major
+Meng_21001/011.打龙袍-老恩师不必胆怕惊-孟广禄.mp3: G# minor
+Meng_21001/047.姚期 马王兄赐某的饯行酒 - 孟广禄.mp3: G major
+Meng_21001/044.探阴山-扶大宋锦华夷赤心肝胆-孟广禄.mp3: F# major
+Meng_21001/016.大保国 功劳簿无有国太令尊 - 孟广禄 王蓉蓉.mp3: F major
+Meng_21001/038.锁五龙 见罗成把我牙咬坏 - 孟广禄.mp3: F# major
+Meng_21001/051.遇皇后-用手接过无价宝-孟广禄.mp3: G major
+Meng_21001/056.智取威虎山 早也盼晚也盼望穿双眼 - 孟广禄.mp3: Db major
+Meng_21001/018.盗御马-乔装改扮下山岗-孟广禄.mp3: Bb minor
+Meng_21001/046.姚期 马杜岑奉王命把草桥来镇 - 孟广禄.mp3: F# major
+Meng_21001/029.七郎托兆 听谯楼打罢了三更时分 - 孟广禄.mp3: F# major
+Meng_21001/008.刺王僚 列国之中干戈吼 - 孟广禄.mp3: D# minor
+Meng_21001/032.秦香莲 香莲下堂泪不干 - 孟广禄 吴昊颐.mp3: G minor
+Meng_21001/033.审潘洪 红铁链烫得我昏迷不醒 - 孟广禄.mp3: Db major
+Meng_21001/001.赤桑镇 恨包勉他初为官贪赃罔上 - 孟广禄.mp3: D# minor
+Meng_21001/036.双投唐 这时候孤才把这宽心放 - 孟广禄 杜镇杰.mp3: D minor
+Meng_21001/035.审潘洪 上堂来责打我四十大板 - 孟广禄.mp3: Db major
+Meng_21001/010.打龙袍-非是臣得下疯魔症-孟广禄.mp3: G# minor
+Meng_21001/022.将相和 将相不和成何样 - 孟广禄 王佩瑜.mp3: G major
+Meng_21001/006.除三害 堪笑尔等双眼瞎 - 孟广禄.mp3: D# minor
+Meng_21001/012.打龙袍-日落西来又转东-孟广禄.mp3: B major
+Meng_21001/020.二进宫 怀抱着幼主爷把国执掌 - 孟广禄 于魁智 李胜素.mp3: C# minor
+Meng_21001/009.打龙袍 忽听万岁宣包拯 - 孟广禄.mp3: F# major
+Meng_21001/007.除三害 一席话说得我羞愧难禁 - 孟广禄.mp3: D# minor
+Meng_21001/019.杜鹃山 大火熊熊照亮天 - 孟广禄.mp3: Db major
+Meng_21001/031.秦香莲 宋天子赈灾荒人称有道 - 孟广禄.mp3: F# major
+Meng_21001/014.打龙袍-在陈州放粮转回京-孟广禄.mp3: G major
+Meng_21001/054.铡美案 国太到此为哪条 - 孟广禄 蓝文云.mp3: G major
+Meng_21001/040.探阴山 包龙图阴山来察看 - 孟广禄.mp3: F# major
+Meng_21001/023.将相和 廉颇闻一言暗思忖 - 孟广禄.mp3: F# major
+Meng_21001/034.审潘洪 潘仁美跪殿角一言告禀 - 孟广禄.mp3: F# major
+Meng_21001/024.将相和 在金殿定官职是非难辨 - 孟广禄.mp3: Db major
+Meng_21001/027.牧虎关 忆昔当年保宋君 - 孟广禄.mp3: F# major
+Meng_21001/052.砸銮驾 都只为陈州地被害百姓 - 孟广禄.mp3: F# major
+Meng_21001/005.赤桑镇 自幼儿蒙嫂娘训教抚养 - 孟广禄.mp3: D# minor
+Meng_21001/028.七郎托兆 叫鬼卒站两厢听爷一令 - 孟广禄.mp3: D# minor
+Meng_21001/004.赤桑镇 嫂娘亲她把那真情话讲 - 孟广禄.mp3: F# major
+Meng_21001/039.探皇陵 听谯楼打罢了初更时候 - 孟广禄.mp3: D# minor
+Meng_21001/042.探阴山 哭啼啼哀告我有什么屈冤 - 孟广禄 赵秀君.mp3: Db major
+Meng_21001/057.智取威虎山-这些兵急人难治病救命-孟广禄.mp3: B major
+Meng_21001/002.赤桑镇 见包拯怒火满胸膛 - 孟广禄 赵葆秀.mp3: F# major
+Meng_21001/013.打龙袍-万岁爷准了臣的本-孟广禄.mp3: F# major
+Meng_21001/045.雪花飘-想当年开机车来往奔驰-孟广禄.mp3: Db major
+Meng_21001/015.打龙袍-在宫中领了国太命-孟广禄.mp3: F# major
+Meng_21001/026.牧虎关 贤妹暂坐雅致厅 - 孟广禄.mp3: F# major
+Meng_21001/053.铡美案 包龙图打坐在开封府 - 孟广禄.mp3: F# major
+Meng_21001/030.奇袭白虎团 趁夜晚出奇兵突破防线 - 孟广禄.mp3: F# major
+Meng_21001/050.遇皇后-今奉王命陈州到-孟广禄.mp3: B minor
+Meng_21001/003.赤桑镇 见嫂娘只哭得泪如雨降 - 孟广禄.mp3: D# minor
+Meng_21001/049.遇皇后 在头上整整乌纱帽 - 孟广禄 蓝文云.mp3: F# major
+Meng_21001/048.遇皇后 宋王爷坐江山人称有道 - 孟广禄.mp3: F# major
+Meng_21001/055.铡美案 香莲下堂泪不干 - 赵秀君 孟广禄.mp3: B major
+Meng_21001/037.锁五龙 号令一声绑帐外 - 孟广禄.mp3: F# major

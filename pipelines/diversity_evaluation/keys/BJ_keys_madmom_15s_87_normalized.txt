@@ -1,0 +1,90 @@
+conda Musical Key Detection Results (Madmom)
+===================================
+
+049.mp3: D# minor
+046.mp3: C minor
+012.mp3: B major
+053.mp3: E minor
+27.mp3: E major
+007.mp3: C minor
+07.mp3: F minor
+025.mp3: G# minor
+010.mp3: B minor
+051.mp3: G major
+028.mp3: G minor
+035.mp3: C minor
+018.mp3: Db major
+015.mp3: B major
+10.mp3: B major
+002.mp3: F# major
+05.mp3: C# minor
+02.mp3: A major
+04.mp3: A major
+013.mp3: F# major
+052.mp3: A minor
+056.mp3: G# minor
+030.mp3: F# major
+020.mp3: C# minor
+019.mp3: Db major
+021.mp3: Ab major
+016.mp3: F major
+042.mp3: Bb minor
+011.mp3: G# minor
+040.mp3: F# major
+055.mp3: B major
+01.mp3: F# minor
+Pick Tea and Catch Butterfly_15s.mp3: E major
+027.mp3: D# minor
+017.mp3: C major
+014.mp3: D# minor
+057.mp3: F# major
+050.mp3: D major
+16.mp3: D major
+005.mp3: G# minor
+03.mp3: B major
+25.mp3: E major
+032.mp3: C major
+044.mp3: F minor
+19.mp3: F# major
+034.mp3: B minor
+054.mp3: G major
+15.mp3: C# minor
+006.mp3: A minor
+031.mp3: F minor
+24.mp3: B major
+003.mp3: C minor
+20.mp3: B minor
+041.mp3: F# major
+14.mp3: E major
+The Beautiful South Yangtze (Jiang Nan Hao)_15s.mp3: G major
+22.mp3: F# major
+045.mp3: G# minor
+21.mp3: E major
+043.mp3: F minor
+18.mp3: E major
+048.mp3: B minor
+001.mp3: A minor
+11.mp3: Bb major
+008.mp3: C# minor
+09.mp3: D major
+Purple Bamboo Melody (Zi Zhu Diao)_15s.mp3: D major
+039.mp3: C minor
+06.mp3: E major
+12.mp3: B major
+037.mp3: Ab major
+022.mp3: E minor
+023.mp3: D# minor
+13.mp3: F major
+033.mp3: B minor
+26.mp3: B major
+036.mp3: F major
+Beijing Opera Tune (Jing Diao)_15s.mp3: F major
+08.mp3: A minor
+17.mp3: B minor
+038.mp3: F# major
+029.mp3: F minor
+009.mp3: D minor
+047.mp3: G major
+004.mp3: A minor
+Enjoying the classic Peking Opera 'Drunken Concubine' at Mid Autumn Festival_15s.mp3: G major
+28.mp3: B minor

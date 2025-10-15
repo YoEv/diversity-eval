@@ -1,0 +1,106 @@
+{
+  "dataset_summary": {
+    "total_songs": 5,
+    "unique_artists": 5,
+    "data_completeness": {
+      "original_title": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "original_artist": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "spotify_id": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "spotify_name": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "spotify_artist": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "album_name": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "release_date": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "popularity": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "duration_ms": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "explicit": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "preview_url": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "external_urls": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "artist_genres": {
+        "count": 2,
+        "percentage": 40.0
+      },
+      "artist_popularity": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "artist_followers": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "local_preview_path": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "popularity_category": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "release_year": {
+        "count": 5,
+        "percentage": 100.0
+      },
+      "duration_category": {
+        "count": 5,
+        "percentage": 100.0
+      }
+    }
+  },
+  "diversity_metrics": {
+    "popularity": {
+      "mean": 84.8,
+      "std": 3.42,
+      "range": 7,
+      "coefficient_of_variation": 0.04
+    },
+    "duration": {
+      "mean_seconds": 197.8,
+      "std_seconds": 23.8,
+      "range_seconds": 59.7
+    },
+    "release_year": {
+      "earliest": 2017,
+      "latest": 2021,
+      "span_years": 4
+    }
+  },
+  "recommendations": [
+    "流行度多样性较低，建议添加更多不同流行度的歌曲",
+    "发行年份跨度较小，建议添加不同年代的歌曲"
+  ]
+}

@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Large model files
+*.bin
+*.safetensors
+*.pt
+*.pth
+external/llark/checkpoints/
+external/tokenizer.model
+
+# Cache and temporary files
+.cache/
+*.log
+*.tmp
+
+# Data files (音频和输出文件)
+data/input/
+data/output/
+*.wav
+*.mp3
+*.npy
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Conda environments
+**/miniconda3/
+**/anaconda3/
+
+# Large external dependencies (可选择性排除)
+external/llama-2-7b-chat/
+external/VOCANO/checkpoint/
+external/VOCANO/generated/

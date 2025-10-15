@@ -1,0 +1,20 @@
+336 out of 341 audio files in total, cut to 15s each. -- cut_audio_15s.py
+Do key detection with key_madmom.py -- key_madmom.py
+Do key detection with key_librosa.py -- key_librosa.py
+- Librosa processes much faster than madmom
+- There ARE differences between this two. 
+- Results in -- key_comparison_results.txt
+- agreed results in -- key_comparison_results_agreed.txt
+Copy all agreed keys dataset to a new folder
+- Do the generation - okay 
+- Do the key detection again - okay 
+- write another python file to do the analysis in all five metrics - okay
+
+Searched for all audio library - 
+    TorchAudio - DL 
+    Essentia - MIR
+    Aubio - MIR
+    nnAudio - DL
+    AudioFlux - Spectral
+
+Search for more metrics - next to do 

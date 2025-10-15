@@ -1,0 +1,20 @@
+Comparison: Uniform Distribution vs BJ_Segments_keys_madmom.txt
+================================================================================
+
+Dataset Statistics:
+- Uniform Distribution: 120 pieces
+- BJ_Segments_keys_madmom.txt: 122 pieces
+
+Key Distribution Metrics:
+- Uniform Entropy: 4.5850
+- Dataset Entropy: 4.1949
+- KL Divergence (Uniform → Dataset): 3.5951
+- Overlapping Area: 0.7131
+- Rare Keys (Uniform): 1.0000
+- Rare Keys (Dataset): 0.6190
+
+Interpretation:
+- Higher entropy indicates more uniform key distribution
+- Lower KL divergence indicates similarity to uniform distribution
+- Higher overlapping area indicates better coverage similarity
+- Lower rare key rate indicates better key diversity

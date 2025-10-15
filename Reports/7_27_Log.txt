@@ -1,0 +1,15 @@
+Reports:
+1. Get all data from ShutterStock with Solo Instrumental prompt
+2. Successfully get 337 tracks, because the website sometime shuffle the tracks a bit. I've tried to re-download several pages to maximize what I can download. 
+3. Many bugs happened before run through the program.
+    - About the robot test: 
+        - Failed a lot of time at the beginning for robot test, and then tried the way to not open a new webpage, but config to a exist webpage. However, by doing this, it needs two terminals that one to handle the debug mode of webpage, the other to run the program. 
+        - It still has the robot test at the middle of running the program when click to the next page. 
+    - About to choose a selector:
+        - There are many selectors to test before being able to choose the correct selector. Almost any step that for an agent to go needs a selector.  
+
+Steps:
+1. Run Debug mode of open a new webpage;
+2. Config this webpage to the downloading website;
+3. Run the program in the second terminal;
+4. Watch out for the robot test when turn to the next page. 

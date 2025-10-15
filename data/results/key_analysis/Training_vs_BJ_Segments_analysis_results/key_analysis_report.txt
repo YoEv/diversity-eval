@@ -1,0 +1,136 @@
+KEY DISTRIBUTION ANALYSIS REPORT
+==================================================
+
+Analysis Date: 2025-08-27 15:46:54.601819
+Real Music File: gen_melody_keys_topk250_2nd_madmom.txt
+Generated Music File: BJ_Segments_1st_keys_madmom.txt
+
+METRICS SUMMARY:
+--------------------
+Total Real Keys: 146 (Coverage: 0.958)
+Total Gen Keys: 122 (Coverage: 0.917)
+Real Entropy: 3.980 (Diversity: 0.868)
+Gen Entropy: 4.209 (Diversity: 0.918)
+KL Divergence: 1.748
+Overlapping Area: 0.558
+Real Rare Key Rate: 0.739
+Gen Rare Key Rate: 0.682
+
+DETAILED DISTRIBUTIONS:
+-------------------------
+Key          Real     Generated  Difference
+---------------------------------------------
+A major      0.034    0.107      0.072     
+A minor      0.021    0.041      0.020     
+Ab major     0.027    0.090      0.063     
+Ab minor     0.007    0.049      0.042     
+B major      0.021    0.016      0.004     
+B minor      0.014    0.016      0.003     
+Bb major     0.068    0.033      0.036     
+Bb minor     0.014    0.025      0.011     
+C major      0.151    0.057      0.093     
+C minor      0.027    0.000      0.027     
+C# minor     0.014    0.000      0.014     
+D major      0.123    0.033      0.091     
+D minor      0.034    0.049      0.015     
+Db major     0.014    0.049      0.035     
+E major      0.027    0.115      0.087     
+E minor      0.021    0.016      0.004     
+Eb major     0.048    0.066      0.018     
+Eb minor     0.000    0.016      0.016     
+F major      0.110    0.025      0.085     
+F minor      0.007    0.016      0.010     
+F# major     0.027    0.057      0.030     
+F# minor     0.014    0.033      0.019     
+G major      0.123    0.057      0.066     
+G minor      0.055    0.033      0.022     
+
+
+============================================================
+KEY DISTRIBUTION ANALYSIS RESULTS
+============================================================
+
+1. Total Real Keys Ratio:
+   - Total files: 146
+   - Unique keys used: 23/24
+   - Total keys ratio: 0.958
+
+   Key Distribution (% of 146 songs):
+   - A major: 3.4%
+   - A minor: 2.1%
+   - Ab major: 2.7%
+   - Ab minor: 0.7%
+   - B major: 2.1%
+   - B minor: 1.4%
+   - Bb major: 6.8%
+   - Bb minor: 1.4%
+   - C major: 15.1%
+   - C minor: 2.7%
+   - C# minor: 1.4%
+   - D major: 12.3%
+   - D minor: 3.4%
+   - Db major: 1.4%
+   - E major: 2.7%
+   - E minor: 2.1%
+   - Eb major: 4.8%
+   - F major: 11.0%
+   - F minor: 0.7%
+   - F# major: 2.7%
+   - F# minor: 1.4%
+   - G major: 12.3%
+   - G minor: 5.5%
+
+2. Total Generated Keys Ratio:
+   - Total files: 122
+   - Unique keys used: 22/24
+   - Total keys ratio: 0.917
+
+   Key Distribution (% of 122 songs):
+   - A major: 10.7%
+   - A minor: 4.1%
+   - Ab major: 9.0%
+   - Ab minor: 4.9%
+   - B major: 1.6%
+   - B minor: 1.6%
+   - Bb major: 3.3%
+   - Bb minor: 2.5%
+   - C major: 5.7%
+   - D major: 3.3%
+   - D minor: 4.9%
+   - Db major: 4.9%
+   - E major: 11.5%
+   - E minor: 1.6%
+   - Eb major: 6.6%
+   - Eb minor: 1.6%
+   - F major: 2.5%
+   - F minor: 1.6%
+   - F# major: 5.7%
+   - F# minor: 3.3%
+   - G major: 5.7%
+   - G minor: 3.3%
+
+3. Distribution Entropy (Diversity):
+   - Real music entropy: 3.980
+   - Generated music entropy: 4.209
+   - Maximum possible entropy: 4.585
+   - Real diversity ratio: 0.868
+   - Generated diversity ratio: 0.918
+
+4. KL Divergence D_KL(P_real || P_gen):
+   - KL divergence: 1.748
+   - Lower values indicate better match to real distribution
+
+5. Overlapping Area:
+   - Overlap coefficient: 0.558
+   - Higher values indicate better distribution match
+
+6. Rare Key Activation (p < 0.05):
+   - Real music rare key rate: 0.739
+   - Generated music rare key rate: 0.682
+   - Real rare keys: ['C minor', 'Db major', 'C# minor', 'D minor', 'Eb major']...
+   - Generated rare keys: ['Db major', 'D major', 'D minor', 'Eb minor', 'E minor']...
+
+Detailed report saved to: Training_vs_BJ_Segments_analysis_results/key_analysis_report.txt
+Plot saved to: Training_vs_BJ_Segments_analysis_results/key_distribution_comparison.png
+
+Analysis completed successfully!

@@ -1,0 +1,133 @@
+KEY DISTRIBUTION ANALYSIS REPORT
+==================================================
+
+Analysis Date: 2025-08-21 16:22:10.544588
+Real Music File: gen_melody_keys_topk250_2nd_madmom.txt
+Generated Music File: BJ_keys_2nd_madmon.txt
+
+METRICS SUMMARY:
+--------------------
+Total Real Keys: 146 (Coverage: 0.958)
+Total Gen Keys: 87 (Coverage: 0.833)
+Real Entropy: 3.980 (Diversity: 0.868)
+Gen Entropy: 3.848 (Diversity: 0.839)
+KL Divergence: 3.587
+Overlapping Area: 0.508
+Real Rare Key Rate: 0.739
+Gen Rare Key Rate: 0.650
+
+DETAILED DISTRIBUTIONS:
+-------------------------
+Key          Real     Generated  Difference
+---------------------------------------------
+A major      0.034    0.103      0.069     
+A minor      0.021    0.011      0.009     
+Ab major     0.027    0.000      0.027     
+Ab minor     0.007    0.011      0.005     
+B major      0.021    0.069      0.048     
+B minor      0.014    0.034      0.021     
+Bb major     0.068    0.011      0.057     
+Bb minor     0.014    0.000      0.014     
+C major      0.151    0.023      0.128     
+C minor      0.027    0.011      0.016     
+C# minor     0.014    0.046      0.032     
+D major      0.123    0.195      0.072     
+D minor      0.034    0.057      0.023     
+Db major     0.014    0.011      0.002     
+E major      0.027    0.069      0.042     
+E minor      0.021    0.034      0.014     
+Eb major     0.048    0.011      0.036     
+Eb minor     0.000    0.046      0.046     
+F major      0.110    0.034      0.075     
+F minor      0.007    0.000      0.007     
+F# major     0.027    0.115      0.088     
+F# minor     0.014    0.046      0.032     
+G major      0.123    0.057      0.066     
+G minor      0.055    0.000      0.055     
+
+
+
+Real music keys found: 146
+Generated music keys found: 87
+
+============================================================
+KEY DISTRIBUTION ANALYSIS RESULTS
+============================================================
+
+1. Total Real Keys Ratio:
+   - Total files: 146
+   - Unique keys used: 23/24
+   - Total keys ratio: 0.958
+
+   Key Distribution (% of 146 songs):
+   - A major: 3.4%
+   - A minor: 2.1%
+   - Ab major: 2.7%
+   - Ab minor: 0.7%
+   - B major: 2.1%
+   - B minor: 1.4%
+   - Bb major: 6.8%
+   - Bb minor: 1.4%
+   - C major: 15.1%
+   - C minor: 2.7%
+   - C# minor: 1.4%
+   - D major: 12.3%
+   - D minor: 3.4%
+   - Db major: 1.4%
+   - E major: 2.7%
+   - E minor: 2.1%
+   - Eb major: 4.8%
+   - F major: 11.0%
+   - F minor: 0.7%
+   - F# major: 2.7%
+   - F# minor: 1.4%
+   - G major: 12.3%
+   - G minor: 5.5%
+
+2. Total Generated Keys Ratio:
+   - Total files: 87
+   - Unique keys used: 20/24
+   - Total keys ratio: 0.833
+
+   Key Distribution (% of 87 songs):
+   - A major: 10.3%
+   - A minor: 1.1%
+   - Ab minor: 1.1%
+   - B major: 6.9%
+   - B minor: 3.4%
+   - Bb major: 1.1%
+   - C major: 2.3%
+   - C minor: 1.1%
+   - C# minor: 4.6%
+   - D major: 19.5%
+   - D minor: 5.7%
+   - Db major: 1.1%
+   - E major: 6.9%
+   - E minor: 3.4%
+   - Eb major: 1.1%
+   - Eb minor: 4.6%
+   - F major: 3.4%
+   - F# major: 11.5%
+   - F# minor: 4.6%
+   - G major: 5.7%
+
+3. Distribution Entropy (Diversity):
+   - Real music entropy: 3.980
+   - Generated music entropy: 3.848
+   - Maximum possible entropy: 4.585
+   - Real diversity ratio: 0.868
+   - Generated diversity ratio: 0.839
+
+4. KL Divergence D_KL(P_real || P_gen):
+   - KL divergence: 3.587
+   - Lower values indicate better match to real distribution
+
+5. Overlapping Area:
+   - Overlap coefficient: 0.508
+   - Higher values indicate better distribution match
+
+6. Rare Key Activation (p < 0.05):
+   - Real music rare key rate: 0.739
+   - Generated music rare key rate: 0.650
+   - Real rare keys: ['C minor', 'Db major', 'C# minor', 'D minor', 'Eb major']...
+   - Generated rare keys: ['C major', 'C minor', 'Db major', 'C# minor', 'Eb major']...

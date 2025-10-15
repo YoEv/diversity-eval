@@ -1,0 +1,20 @@
+Comparison: Uniform Distribution vs gen_melody_keys_topk250_1st_madmom.txt
+================================================================================
+
+Dataset Statistics:
+- Uniform Distribution: 120 pieces
+- gen_melody_keys_topk250_1st_madmom.txt: 146 pieces
+
+Key Distribution Metrics:
+- Uniform Entropy: 4.5850
+- Dataset Entropy: 3.8524
+- KL Divergence (Uniform → Dataset): 5.0015
+- Overlapping Area: 0.5999
+- Rare Keys (Uniform): 1.0000
+- Rare Keys (Dataset): 0.6500
+
+Interpretation:
+- Higher entropy indicates more uniform key distribution
+- Lower KL divergence indicates similarity to uniform distribution
+- Higher overlapping area indicates better coverage similarity
+- Lower rare key rate indicates better key diversity
