@@ -18,6 +18,8 @@ echo "Setting up LLark environment..."
 #     # 激活环境
 #     conda activate llark
     
+# 基础模型之外，为了加速，又按炸胡干了很多其他的。
+
 # 安装基础依赖
     echo "Installing basic dependencies..."
     cd /home/evev/diversity-eval/external/llark
