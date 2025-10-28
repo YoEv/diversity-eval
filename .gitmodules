@@ -1,0 +1,3 @@
+[submodule "external/llark"]
+	path = external/llark
+	url = git@github.com:YoEv/llark.git
