@@ -1,3 +1,9 @@
 [submodule "external/llark"]
 	path = external/llark
 	url = git@github.com:YoEv/llark.git
+[submodule "external/VOCANO"]
+	path = external/VOCANO
+	url = https://github.com/B05901022/VOCANO.git
+[submodule "external/basic-pitch-torch"]
+	path = external/basic-pitch-torch
+	url = git@github.com:gudgud96/basic-pitch-torch.git
