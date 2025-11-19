@@ -3,16 +3,53 @@ Server Steps
 ==============================================================================
 Download datasets
 ==============================================================================
+- data download to data/input
 > cd diveristy-eval
 > python data/download_gtzan_dataset.py 
-
-- data download to data/input
 
 ==============================================================================
 Source Separation
 ==============================================================================
-- building env, very easy, see Reports/11_5-htdemucs_setup.txt
+- building env, very easy
+- Refer to Reports/11_5-htdemucs_setup.txt
 
 - run sourse separtion, output to data/output/separated
 > pipelines/source_separation/hybrid_demucs_separate.py
+
+==============================================================================
+Prompt Generation
+==============================================================================
+- Docker setup for Qwen3 omni
+- Refer to Reports/11_3-qwen_setup.txt
+
+use Docker image, look for Docker in https://github.com/QwenLM/Qwen3-Omni 
+
+[xli3252@atl1-1-03-013-26-0 ~]$ cd scratch/
+[xli3252@atl1-1-03-013-26-0 scratch]$ mkdir -p ~/scratch/qwen3_omni_ws
+[xli3252@atl1-1-03-013-26-0 scratch]$ ls
+diversity-eval-backup  qwen3_omni_ws  trae-server
+[xli3252@atl1-1-03-013-26-0 scratch]$ export LOCAL_QWEN=~/scratch/qwen3_omni_ws
+[xli3252@atl1-1-03-013-26-0 scratch]$ mkdir -p $LOCAL_QWEN
+
+[xli3252@atl1-1-03-013-26-0 scratch]$ apptainer exec --nv \
+  --bind "$LOCAL_QWEN":/data/shared/Qwen3-Omni \
+  --env HF_HOME=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env HUGGINGFACE_HUB_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env TRANSFORMERS_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env MODELSCOPE_CACHE=/data/shared/Qwen3-Omni/.cache/modelscope \
+  docker://qwenllm/qwen3-omni:3-cu124 \
+  bash
+
+Apptainer> git clone https://github.com/QwenLM/Qwen3-Omni.git
+Apptainer> cd Qwen3-Omni
+
+apptainer pull "$HOME/scratch/qwen3-omni-3-cu124.sif" docker://qwenllm/qwen3-omni:3-cu124
+
+cd /home/hice1/xli3252/Desktop/diversity-eval
+apptainer exec --nv --bind "$HOME/scratch/qwen3_omni_ws:/data/shared/Qwen3-Omni" "$HOME/scratch/qwen3-omni-3-cu124.sif" bash
+
+
+- Run prompt preparation pipelines/prompt_generation/qwen3-omni/qwen_omni_prepare_prompts.py to data/output/omni_prompt_input
+- Run prompt generation  pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption.py for all data/output/separated
+
 
