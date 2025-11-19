@@ -1,0 +1,18 @@
+Server Steps
+
+==============================================================================
+Download datasets
+==============================================================================
+> cd diveristy-eval
+> python data/download_gtzan_dataset.py 
+
+- data download to data/input
+
+==============================================================================
+Source Separation
+==============================================================================
+- building env, very easy, see Reports/11_5-htdemucs_setup.txt
+
+- run sourse separtion, output to data/output/separated
+> pipelines/source_separation/hybrid_demucs_separate.py
+
