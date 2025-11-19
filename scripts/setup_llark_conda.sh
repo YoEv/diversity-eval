@@ -16,7 +16,7 @@ if ! command -v conda &> /dev/null; then
 fi
 
 # Navigate to external directory
-cd /home/evev/diversity-eval/external
+cd /home/hice1/xli3252/Desktop/diversity-eval/external
 
 # Clone LLark repository
 echo "Cloning LLark repository..."
@@ -94,7 +94,7 @@ echo "LLark conda environment setup completed!"
 
 # Create conda-aware integration script
 echo "Creating conda-aware LLark integration script..."
-cat > /home/evev/diversity-eval/scripts/run_llark_conda.sh << 'SCRIPT_EOF'
+cat > /home/hice1/xli3252/Desktop/diversity-eval/scripts/run_llark_conda.sh << 'SCRIPT_EOF'
 #!/bin/bash
 
 # LLark - Music Language Model Script (with conda environment)
@@ -129,7 +129,7 @@ eval "$(conda shell.bash hook)"
 conda activate llark
 
 # Navigate to LLark directory
-cd /home/evev/diversity-eval/external/llark
+cd /home/hice1/xli3252/Desktop/diversity-eval/external/llark
 
 echo "Running LLark command: $COMMAND"
 
@@ -205,10 +205,10 @@ esac
 conda deactivate
 SCRIPT_EOF
 
-chmod +x /home/evev/diversity-eval/scripts/run_llark_conda.sh
+chmod +x /home/hice1/xli3252/Desktop/diversity-eval/scripts/run_llark_conda.sh
 
 # Create environment management script
-cat > /home/evev/diversity-eval/scripts/manage_llark_env.sh << 'MANAGE_EOF'
+cat > /home/hice1/xli3252/Desktop/diversity-eval/scripts/manage_llark_env.sh << 'MANAGE_EOF'
 #!/bin/bash
 
 # LLark Environment Management Script
@@ -248,7 +248,7 @@ case "$1" in
         echo "Starting Jupyter notebook in LLark environment..."
         eval "$(conda shell.bash hook)"
         conda activate llark
-        cd /home/evev/diversity-eval/external/llark
+        cd /home/hice1/xli3252/Desktop/diversity-eval/external/llark
         jupyter notebook
         ;;
     *)
@@ -266,11 +266,11 @@ case "$1" in
 esac
 MANAGE_EOF
 
-chmod +x /home/evev/diversity-eval/scripts/manage_llark_env.sh
+chmod +x /home/hice1/xli3252/Desktop/diversity-eval/scripts/manage_llark_env.sh
 
 # Create LLark integration for embedding pipeline
 echo "Creating LLark embedding integration..."
-cat > /home/evev/diversity-eval/pipelines/embedding/llark_embedding.py << 'EMBED_EOF'
+cat > /home/hice1/xli3252/Desktop/diversity-eval/pipelines/embedding/llark_embedding.py << 'EMBED_EOF'
 #!/usr/bin/env python3
 """
 LLark音乐嵌入模块
@@ -289,7 +289,7 @@ class LLarkEmbedding:
     """LLark音乐嵌入生成器"""
     
     def __init__(self):
-        self.llark_path = "/home/evev/diversity-eval/external/llark"
+        self.llark_path = "/home/hice1/xli3252/Desktop/diversity-eval/external/llark"
         self.conda_env = "llark"
     
     def activate_conda_and_run(self, command):
@@ -357,7 +357,7 @@ EMBED_EOF
 # Update README_EXTERNAL.md with LLark information
 echo "Updating README_EXTERNAL.md with LLark information..."
 
-cat >> /home/evev/diversity-eval/README_EXTERNAL.md << 'README_EOF'
+cat >> /home/hice1/xli3252/Desktop/diversity-eval/README_EXTERNAL.md << 'README_EOF'
 
 ## LLark - Multimodal Instruction-Following Language Model for Music
 

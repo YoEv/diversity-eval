@@ -1,0 +1,255 @@
+Apply for gpu：srun --account=musi --qos=coe-ice --partition=coe-gpu --gres=gpu:1 --time=4:00:00 --mem=32G --cpus-per-task=4 --pty bash
+
+
+ first follow the QuickStart guide to download the model and install the necessary inference environment dependencies, then run and experiment locally
+ - Music Analysis - https://github.com/QwenLM/Qwen3-Omni/blob/main/cookbooks/music_analysis.ipynb
+ - Audio Caption - https://github.com/QwenLM/Qwen3-Omni/blob/main/cookbooks/audio_caption.ipynb 
+ - Qwen3-Omni-30B-A3B-Captioner - https://github.com/QwenLM/Qwen3-Omni/blob/main/cookbooks/omni_captioner.ipynb 
+    - should use this one
+
+ For large-scale invocation or low-latency requirements, we highly recommend using vLLM or performing inference via the DashScope API. We also strongly suggest using our provided Docker image, which includes a complete runtime environment for both Hugging Face Transformers and vLLM. 
+
+Create an env or use Docker image
+
+[xli3252@atl1-1-03-013-26-0 ~]$ cd scratch/
+[xli3252@atl1-1-03-013-26-0 scratch]$ mkdir -p ~/scratch/qwen3_omni_ws
+[xli3252@atl1-1-03-013-26-0 scratch]$ ls
+diversity-eval-backup  qwen3_omni_ws  trae-server
+[xli3252@atl1-1-03-013-26-0 scratch]$ export LOCAL_QWEN=~/scratch/qwen3_omni_ws
+[xli3252@atl1-1-03-013-26-0 scratch]$ mkdir -p $LOCAL_QWEN
+
+[xli3252@atl1-1-03-013-26-0 scratch]$ apptainer exec --nv \
+  --bind "$LOCAL_QWEN":/data/shared/Qwen3-Omni \
+  --env HF_HOME=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env HUGGINGFACE_HUB_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env TRANSFORMERS_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env MODELSCOPE_CACHE=/data/shared/Qwen3-Omni/.cache/modelscope \
+  docker://qwenllm/qwen3-omni:3-cu124 \
+  bash
+
+Apptainer> git clone https://github.com/QwenLM/Qwen3-Omni.git
+Apptainer> cd Qwen3-Omni
+Apptainer> python web_demo.py -c Qwen/Qwen3-Omni-30B-A3B-Instruct \
+  --server-port 8080 --server-name 0.0.0.0
+
+- error: gcc dependency on host env
+exit
+PlanA: do not use gcc, do not use Triton
+apptainer exec --nv --cleanenv \
+  --bind "$LOCAL_QWEN":/data/shared/Qwen3-Omni \
+  --env HF_HOME=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env HUGGINGFACE_HUB_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env TRANSFORMERS_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env MODELSCOPE_CACHE=/data/shared/Qwen3-Omni/.cache/modelscope \
+  --env VLLM_USE_TRITON_FLASH_ATTN=0 \
+  docker://qwenllm/qwen3-omni:3-cu124 \
+  bash
+
+=======================================================
+进入新node时，重新bind，然后进入Container
+=======================================================
+[xli3252@atl1-1-03-015-2-0 ~]$ export LOCAL_QWEN="$HOME/scratch/qwen3_omni_ws"
+[xli3252@atl1-1-03-015-2-0 ~]$ mkdir -p "$LOCAL_QWEN"
+[xli3252@atl1-1-03-015-2-0 ~]$ apptainer exec --nv --bind "$LOCAL_QWEN:/data/shared/Qwen3-Omni" docker://qwenllm/qwen3-omni:3-cu124 bash
+
+=======================================================
+长久化方案一、固化镜像为SIF，之后只需每次bind - 现在用这个方法
+=======================================================
+固化镜像
+apptainer pull "$HOME/scratch/qwen3-omni-3-cu124.sif" docker://qwenllm/qwen3-omni:3-cu124
+只需每次bind
+cd /home/hice1/xli3252/Desktop/diversity-eval
+apptainer exec --nv --bind "$HOME/scratch/qwen3_omni_ws:/data/shared/Qwen3-Omni" "$HOME/scratch/qwen3-omni-3-cu124.sif" bash
+
+=======================================================
+长久化方案二、持久化缓存目录
+=======================================================
+export APPTAINER_CACHEDIR="$HOME/scratch/.apptainer-cache"
+用别名固化一次性操作，避免手敲变量与绑定（注意别名中的路径需与你实际一致）
+echo "alias qwen_shell='export LOCAL_QWEN=\$HOME/scratch/qwen3_omni_ws; apptainer exec --nv --bind \$LOCAL_QWEN:/data/shared/Qwen3-Omni \$HOME/scratch/qwen3-omni-3-cu124.sif bash'" >> ~/.bashrc
+
+source ~/.bashrc
+
+之后只需要
+qwen_shell
+
+========================================================
+Batch Prompt Genration Version：
+========================================================
+prompt：This is a vocal solo track from a source separated pop music, describe the tempo, rhythm pattern, style, emotions, lyrics story, and melodic contour of the piece.
+Apptainer> cd /home/hice1/xli3252/Desktop/diversity-eval
+Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_prepare_prompts.py
+
+Webdemo Version：
+Apptainer> python web_demo.py -c Qwen/Qwen3-Omni-30B-A3B-Instruct \
+  --server-port 8080 --server-name 0.0.0.0
+换一个没有被占用的本地端口
+lsof -nP -iTCP:8911 | grep LISTEN || true
+在 本地电脑 执行隧道（整行复制）
+ssh -N -f -v -o ExitOnForwardFailure=yes -o ServerAliveInterval=60 \
+  -J xli3252@login-ice-1.pace.gatech.edu \
+  -L 8911:atl1-1-03-013-26-0:8080 \
+  xli3252@atl1-1-03-013-26-0
+在Chrome浏览器中打开
+http://localhost:8911
+
+Ctrl+C
+exit
+检查节点使用情况
+[xli3252@atl1-1-03-013-26-0 scratch]$ squeue -u xli3252
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           3496292   coe-gpu     bash  xli3252  R    1:43:07      1 atl1-1-03-013-26-0
+
+PlanB: use gcc in Docker，但是PlanA已经够快了
+examine:
+apptainer exec --nv --cleanenv docker://qwenllm/qwen3-omni:3-cu124 which gcc
+See if it has gcc in Docker at /usr/bin/gcc, if so ->
+apptainer exec --nv --cleanenv \
+  --bind "$LOCAL_QWEN":/data/shared/Qwen3-Omni \
+  --env HF_HOME=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env HUGGINGFACE_HUB_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env TRANSFORMERS_CACHE=/data/shared/Qwen3-Omni/.cache/huggingface \
+  --env MODELSCOPE_CACHE=/data/shared/Qwen3-Omni/.cache/modelscope \
+  --env CC=/usr/bin/gcc \
+  docker://qwenllm/qwen3-omni:3-cu124 \
+  bash
+
+如果搭建环境的话，需要自行下载：
+hf-Transformers
+
+flashattn2: 
+Requirements: H100 / H800 GPU, CUDA >= 12.3.
+We highly recommend CUDA 12.8 for best performance.
+
+vLLM
+
+========================================================
+设置weights缓存路径，得提前检查一下：
+========================================================
+[xli3252@login-ice-4 ~]$ echo "$HOME"; echo "$HF_HOME"; echo "$TRANSFORMERS_CACHE"; echo "$HUGGINGFACE_HUB_CACHE"
+/home/hice1/xli3252
+[xli3252@login-ice-4 ~]$ unlink "$HOME/scratch/.cache/huggingface/hub"
+[xli3252@login-ice-4 ~]$ mkdir -p "$HOME/scratch/.cache/huggingface/hub"
+[xli3252@login-ice-4 ~]$ rsync -a --info=progress2,stats2 "$HOME/.cache/huggingface/hub.bak/" "$HOME/scratch/.cache/huggingface/hub/"
+
+
+========================================================
+加速模型推理
+========================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Music Captioning，5s/it
+Pop 00000
+{
+"tempo": "The tempo is slow and deliberate, creating a somber and introspective atmosphere.",
+"rhythm_pattern": "The rhythm is defined by a simple, steady beat with a prominent bassline and sparse percussion. The vocal rhythm is smooth and flowing, with the singer using a gentle, swaying pattern that enhances the emotional weight of the lyrics.",
+"style": "This is a soulful and emotional vocal track in the style of contemporary R&B or pop. The style is intimate and confessional, focusing on the singer's voice and the raw emotion behind the lyrics.",
+"emotions": "The emotion is one of deep sorrow and spiritual longing. The singer expresses a sense of being lost and in need of redemption, conveying a feeling of vulnerability and hope.",
+"lyrics_story": "The lyrics tell a story of spiritual crisis and a plea for salvation. The narrator describes feeling lost and alone, with their soul evaporating. The lyrics convey a sense of desperation and a deep yearning for spiritual renewal and redemption.",
+"melodic_contour": "The melody is smooth and flowing, with a simple and lyrical contour. It rises and falls in a way that mirrors the emotional content of the lyrics, creating a soothing and intimate vocal performance."
+}
+Pop 00001
+{
+"tempo": "The tempo is upbeat and energetic, creating a lively and danceable rhythm.",
+"rhythm_pattern": "The rhythm is defined by a strong, driving beat with a prominent bassline and crisp percussion. The vocal rhythm is syncopated and dynamic, adding to the song's high-energy feel.",
+"style": "This is an energetic and confident vocal track in the style of pop or R&B. The style is assertive and sassy, with a focus on strong vocals and a driving instrumental.",
+"emotions": "The emotion is a mix of frustration, defiance, and empowerment. The singer expresses a sense of betrayal and a determination to move on from the relationship.",
+"lyrics_story": "The lyrics tell the story of a breakup and the singer's realization that their partner is not as important as they thought. The narrator reflects on the relationship, expressing frustration and a sense of empowerment. The lyrics convey a message of self-worth and the importance of moving on from toxic relationships.",
+"melodic_contour": "The melody is dynamic and varied, with a range of notes and a strong, memorable hook. The contour rises and falls to match the emotional intensity of the lyrics, creating a powerful and engaging vocal performance."
+}
+Pop 00002
+{
+"tempo": "The tempo is slow and steady, creating a romantic and intimate atmosphere.",
+"rhythm_pattern": "The rhythm is defined by a soft, pulsing beat with a prominent bassline and gentle percussion. The vocal rhythm is smooth and flowing, with the singer using a gentle, swaying pattern that enhances the romantic feel.",
+"style": "This is a smooth and sultry vocal track in the style of contemporary R&B or pop. The style is intimate and emotional, focusing on the singer's voice and the emotional connection with the listener.",
+"emotions": "The emotion is one of deep longing and passionate desire. The singer expresses a powerful need for their loved one, conveying a sense of romantic obsession and yearning.",
+"lyrics_story": "The lyrics tell a story of intense romantic longing and desire. The narrator expresses their deep need for their loved one, stating that they cannot live without them. The lyrics convey a sense of romantic obsession, with the singer willing to do anything to be with their partner.",
+"melodic_contour": "The melody is smooth and flowing, with a simple and lyrical contour. It rises and falls in a way that mirrors the emotional content of the lyrics, creating a soothing and intimate vocal performance."
+}
+Pop 00003
+{
+"tempo": "The track has an upbeat, driving tempo, likely around 130-140 BPM. It's a fast-paced, energetic pace that propels the song forward.",
+"rhythm_pattern": "The rhythm is characterized by a strong, consistent backbeat from the drums, typical of pop and rock music. The vocals are rhythmically precise and syncopated, often landing on the off-beats, which adds to the track's energetic and slightly rebellious feel.",
+"style": "This is a high-energy, upbeat pop-punk or alternative pop track. It features a prominent, powerful female vocal with a raw, slightly edgy quality, supported by a driving drum beat and simple, catchy guitar riffs.",
+"emotions": "The song conveys a mix of defiant optimism and youthful angst. The lyrics speak of facing challenges (underpaid, tired), but the energetic delivery and triumphant chorus create an overall feeling of resilience, confidence, and 'keeping your head up'.",
+"lyrics_story": "The song tells the story of someone navigating the struggles of a young adult life—feeling underpaid, tired, and 'drunk but sober'—but choosing to maintain a positive and defiant attitude. The central message is one of perseverance and hope, summed up in the chorus where the narrator declares that 'everything's gonna be fine'.",
+"melodic_contour": "The melody is highly anthemic and catchy. It features a simple, repetitive structure with a rising, declarative quality in the chorus that builds to a confident, triumphant peak. The verses have a more conversational, descending melodic line that sets up the energetic release of the chorus."
+}
+Pop 00004
+{
+"tempo": "The tempo is moderately paced and consistent, with a steady, mid-tempo beat that gives the song a reflective and romantic feel.",
+"rhythm_pattern": "The rhythm is defined by a simple, steady drum beat that provides a solid foundation for the vocals. The vocal rhythm is primarily syllabic and closely follows the natural cadence of the lyrics, with a smooth, flowing delivery.",
+"style": "This is a clean, modern pop vocal track with an intimate and confessional quality. The focus is on the singer's voice, creating a personal and direct connection with the listener.",
+"emotions": "The emotion is one of gentle, heartfelt vulnerability and romantic surrender. There's a sense of being helplessly captivated by someone, conveyed with sincerity and a touch of playful resignation.",
+"lyrics_story": "The lyrics tell a story of falling in love unexpectedly. The narrator describes a moment where the other person's simple act of asking about their day is enough to win them over. They admit they're falling head over heels and take on the role of the 'victimized' party, humorously blaming the other person for their feelings.",
+"melodic_contour": "The melody is melodic and lyrical, with a smooth, flowing contour. It uses gentle rises and falls that mirror the emotional content of the lyrics, rising in pitch to emphasize key phrases like 'you've already won me over' and 'head over feet'."
+}
+Pop 00005
+{
+"tempo": "The tempo is moderate and steady, providing a solid foundation for the emotional delivery of the lyrics.",
+"rhythm_pattern": "The rhythm is driven by a consistent, mid-tempo drum beat. The vocal rhythm is deliberate and clear, with the singer placing emphasis on key words and phrases to enhance the lyrical storytelling.",
+"style": "This is a modern pop vocal track with a clear, intimate quality. The style is confessional and narrative, focusing on the singer's personal story and emotional state.",
+"emotions": "The emotion is a mix of frustration, irony, and wry resignation. The singer expresses the pain of a situation that came too late to matter, highlighting the irony and futility of the circumstances.",
+"lyrics_story": "The lyrics tell the story of a missed opportunity or a realization that comes too late. The narrator reflects on a series of ironic situations, like rain on a wedding day or a free ride after already paying. The central theme is the frustration of having advice that was never taken and the realization that the situation is now beyond repair.",
+"melodic_contour": "The melody is melodic and flowing, with a structure that builds and releases tension. The contour rises and falls to match the emotional peaks and valleys of the lyrics, creating a dynamic and engaging vocal performance."
+}
+Pop 00006
+{
+"tempo": "The tempo is slow and deliberate, creating a reflective and atmospheric mood.",
+"rhythm_pattern": "The rhythm is primarily defined by the singer's vocal delivery rather than a prominent beat. It is free-flowing and unhurried, with a gentle, swaying quality that enhances the dreamy feel of the track.",
+"style": "This is an atmospheric and ethereal vocal track. The style is intimate and personal, with a focus on the singer's voice as the primary instrument, creating a dreamy and emotional soundscape.",
+"emotions": "The emotion is one of heartfelt gratitude and sincere appreciation. The song conveys a deep sense of thankfulness for the support and love received from others.",
+"lyrics_story": "The lyrics tell a story of gratitude and appreciation. The narrator expresses thanks to specific individuals, acknowledging the impact they have had on their life. The lyrics reflect on the support and love received, highlighting the importance of these relationships.",
+"melodic_contour": "The melody is gentle and flowing, with a simple and lyrical contour. It rises and falls in a way that mirrors the emotional content of the lyrics, creating a soothing and reflective vocal performance."
+}
+Pop 00007
+{
+"tempo": "The tempo is slow and deliberate, creating a somber and reflective atmosphere.",
+"rhythm_pattern": "The rhythm is defined by the singer's vocal delivery rather than a prominent beat. It is free-flowing and unhurried, with a gentle, swaying quality that enhances the emotional depth of the track.",
+"style": "This is an intimate and confessional vocal track. The style is raw and emotional, focusing on the singer's voice to convey a powerful and personal message.",
+"emotions": "The emotion is one of deep sorrow and melancholy. The song conveys a sense of being an outsider or an unwanted presence, expressing feelings of loneliness and rejection.",
+"lyrics_story": "The lyrics tell a story of being an unwanted presence in someone's life. The narrator describes feeling like an object of desire rather than a person, and being an uninvited guest. The lyrics reflect on the pain of being treated as an unfortunate slight, highlighting the emotional isolation and loneliness experienced.",
+"melodic_contour": "The melody is gentle and flowing, with a simple and lyrical contour. It rises and falls in a way that mirrors the emotional content of the lyrics, creating a soothing and reflective vocal performance."
+}
+Pop 00008
+{
+"tempo": "The tempo is moderate and steady, providing a solid foundation for the emotional delivery of the lyrics.",
+"rhythm_pattern": "The rhythm is driven by a consistent, mid-tempo drum beat. The vocal rhythm is clear and deliberate, with the singer placing emphasis on key words and phrases to enhance the lyrical storytelling.",
+"style": "This is a modern pop vocal track with a clear, intimate quality. The style is confessional and narrative, focusing on the singer's personal story and emotional state.",
+"emotions": "The emotion is a mix of frustration, irony, and wry resignation. The singer expresses the pain of a situation that came too late to matter, highlighting the irony and futility of the circumstances.",
+"lyrics_story": "The lyrics tell the story of a missed opportunity or a realization that comes too late to matter. The narrator reflects on a series of ironic situations, like rain on a wedding day or a free ride after already paying. The central theme is the frustration of having advice that was never taken and the realization that the situation is now beyond repair.",
+"melodic_contour": "The melody is melodic and flowing, with a structure that builds and releases tension. The contour rises and falls to match the emotional peaks and valleys of the lyrics, creating a dynamic and engaging vocal performance."
+}
+Pop 00009
+{
+"tempo": "The tempo is fast and energetic, creating a driving and upbeat rhythm that propels the song forward.",
+"rhythm_pattern": "The rhythm is defined by a strong, danceable beat with a prominent bassline and crisp percussion. The vocal rhythm is syncopated and dynamic, adding to the song's high-energy feel.",
+"style": "This is an energetic and powerful vocal track in the style of pop-rock or alternative pop. The style is assertive and confident, with a focus on strong vocals and a driving instrumental.",
+"emotions": "The emotion is a mix of anger, frustration, and defiance. The singer expresses a sense of betrayal and a determination to confront the person who wronged them.",
+"lyrics_story": "The lyrics tell a story of betrayal and confrontation. The narrator addresses someone who has moved on to a new relationship, expressing anger and frustration at being replaced. The lyrics highlight the pain of being forgotten and the determination to remind the other person of their past mistakes.",
+"melodic_contour": "The melody is dynamic and varied, with a range of notes and a strong, memorable hook. The contour rises and falls to match the emotional intensity of the lyrics, creating a powerful and engaging vocal performance."
+}
+

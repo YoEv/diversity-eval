@@ -11,65 +11,78 @@ import subprocess
 from pathlib import Path
 
 def install_kagglehub():
-    """安装kagglehub包"""
-    print("🔧 检查并安装kagglehub...")
-    
+    """检查kagglehub是否可用，不在脚本内安装以避免配额问题"""
+    print("🔧 检查kagglehub...")
     try:
         import kagglehub
         print("✅ kagglehub已安装")
         return True
     except ImportError:
-        print("📦 安装kagglehub...")
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
-            print("✅ kagglehub安装成功")
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"❌ kagglehub安装失败: {e}")
-            return False
+        print("❌ 未检测到kagglehub。请使用当前解释器手动安装：")
+        print(f"   {sys.executable} -m pip install --cache-dir=$HOME/scratch/.cache kagglehub")
+        return False
 
-def download_gtzan_dataset():
-    """下载GTZAN数据集"""
+def download_gtzan_dataset(target_dir):
+    """下载GTZAN数据集到可用空间（优先使用scratch）"""
     print("🎵 开始下载GTZAN数据集...")
     print("=" * 50)
-    
+
+    cache_root = Path.home() / "scratch" / ".cache"
+    tmp_root = Path.home() / "scratch" / "tmp"
+    try:
+        cache_root.mkdir(parents=True, exist_ok=True)
+        tmp_root.mkdir(parents=True, exist_ok=True)
+        os.environ.setdefault("XDG_CACHE_HOME", str(cache_root))
+        os.environ.setdefault("XDG_CONFIG_HOME", str(cache_root / "config"))
+        os.environ.setdefault("XDG_DATA_HOME", str(cache_root / "data"))
+        os.environ.setdefault("TMPDIR", str(tmp_root))
+    except Exception:
+        pass
+
     # 确保kagglehub已安装
     if not install_kagglehub():
-        return False
-    
-    try:
-        import kagglehub
-        
-        # 下载数据集
-        print("📥 正在从Kaggle下载GTZAN数据集...")
-        print("⏳ 这可能需要几分钟时间，请耐心等待...")
-        
-        path = kagglehub.dataset_download("andradaolteanu/gtzan-dataset-music-genre-classification")
-        
-        print(f"✅ 数据集下载完成!")
-        print(f"📁 下载路径: {path}")
-        
-        return path
-        
-    except Exception as e:
-        print(f"❌ 下载失败: {e}")
         return None
 
-def organize_dataset(download_path):
+    try:
+        import kagglehub
+        print("📥 正在从Kaggle下载GTZAN数据集...")
+        print("⏳ 这可能需要几分钟时间，请耐心等待...")
+        path = kagglehub.dataset_download("andradaolteanu/gtzan-dataset-music-genre-classification")
+        print("✅ 数据集下载完成!")
+        print(f"📁 下载路径: {path}")
+        return path
+    except Exception as e:
+        print(f"❌ kagglehub 下载失败: {e}")
+        kaggle_cli = shutil.which("kaggle")
+        if kaggle_cli:
+            try:
+                target_dir = Path(target_dir)
+                target_dir.mkdir(parents=True, exist_ok=True)
+                os.environ.setdefault("KAGGLE_CONFIG_DIR", str(Path.home() / "scratch" / ".kaggle"))
+                subprocess.check_call([
+                    kaggle_cli, "datasets", "download",
+                    "-d", "andradaolteanu/gtzan-dataset-music-genre-classification",
+                    "-p", str(target_dir),
+                    "-unzip",
+                ])
+                print(f"✅ Kaggle CLI 下载完成: {target_dir}")
+                return str(target_dir)
+            except Exception as e2:
+                print(f"❌ Kaggle CLI 下载失败: {e2}")
+                return None
+        else:
+            print("⚠️ 未检测到 kaggle CLI。请在计算节点配置好 ~/.kaggle/token 后再试，或手动下载到 scratch。")
+            return None
+
+def organize_dataset(download_path, target_dir):
     """整理数据集到目标目录"""
     print("\n🗂️  整理数据集...")
     print("=" * 50)
-    
-    # 目标目录
-    script_dir = Path(__file__).parent
-    target_dir = script_dir / "input" / "GTZAN_Dataset"
-    
+
+    target_dir = Path(target_dir)
     print(f"📂 目标目录: {target_dir}")
-    
-    # 创建目标目录
     target_dir.mkdir(parents=True, exist_ok=True)
-    
-    # 复制数据集
+
     download_path = Path(download_path)
     
     try:
@@ -159,19 +172,18 @@ def analyze_dataset(target_dir):
         "sample_files": audio_files[:5]
     }
 
-def create_dataset_info():
+def create_dataset_info(target_dir):
     """创建数据集信息文件"""
     print("\n📄 创建数据集信息文件...")
-    
-    script_dir = Path(__file__).parent
-    target_dir = script_dir / "input" / "GTZAN_Dataset"
-    
+
+    target_dir = Path(target_dir)
+
     info = {
         "dataset_name": "GTZAN Music Genre Classification Dataset",
         "source": "Kaggle - andradaolteanu/gtzan-dataset-music-genre-classification",
         "description": "音乐流派分类数据集，包含10个流派，每个流派100首歌曲",
         "genres": ["blues", "classical", "country", "disco", "hiphop", 
-                  "jazz", "metal", "pop", "reggae", "rock"],
+                   "jazz", "metal", "pop", "reggae", "rock"],
         "total_tracks": 1000,
         "track_length": "30秒",
         "sample_rate": "22050 Hz",
@@ -203,31 +215,24 @@ def create_dataset_info():
 def main():
     print("🎵 GTZAN音乐流派数据集下载器")
     print("=" * 60)
-    print("📋 这个脚本将下载GTZAN数据集到data/input/GTZAN_Dataset目录")
+    print("📋 这个脚本将数据集保存到scratch目录: ~/scratch/datasets/GTZAN_Dataset")
     print()
-    
-    # 1. 下载数据集
-    download_path = download_gtzan_dataset()
-    
+
+    scratch_base = Path.home() / "scratch" / "datasets"
+    target_dir = scratch_base / "GTZAN_Dataset"
+
+    download_path = download_gtzan_dataset(target_dir)
     if not download_path:
         print("❌ 数据集下载失败，程序退出")
         return False
-    
-    # 2. 整理数据集
-    if not organize_dataset(download_path):
+
+    if not organize_dataset(download_path, target_dir):
         print("❌ 数据集整理失败")
         return False
-    
-    # 3. 分析数据集
-    script_dir = Path(__file__).parent
-    target_dir = script_dir / "input" / "GTZAN_Dataset"
-    
+
     analysis = analyze_dataset(target_dir)
-    
-    # 4. 创建数据集信息
-    info = create_dataset_info()
-    
-    # 5. 总结
+    info = create_dataset_info(target_dir)
+
     print("\n🎉 GTZAN数据集下载和设置完成!")
     print("=" * 60)
     print(f"📁 数据集位置: {target_dir}")
@@ -239,7 +244,7 @@ def main():
     print("   2. 提取音频特征")
     print("   3. 训练音乐分类模型")
     print("   4. 与现有的BJ Opera数据集进行对比分析")
-    
+
     return True
 
 if __name__ == "__main__":

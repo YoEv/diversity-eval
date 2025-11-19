@@ -1,0 +1,60 @@
+========================================================
+Qwen Batch Prompt Genration Debug：
+========================================================
+
+Apptainer> cd /home/hice1/xli3252/Desktop/diversity-eval
+Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption.py --device cuda --qwen-repo "$HOME/scratch/qwen3_omni_ws/Qwen3-Omni"
+
+关于权重绑定：
+export HF_HOME="$HOME/scratch/.cache/huggingface"; export TRANSFORMERS_CACHE="$HF_HOME/transformers"; export HUGGINGFACE_HUB_CACHE="$HF_HOME/hub"
+
+- Apptainer 进入容器时绑定缓存目录：
+apptainer exec --nv --bind "$HOME/scratch/.cache/huggingface":/root/.cache/huggingface "$HOME/scratch/qwen-omni.sif" bash
+
+- Docker 场景用挂载避免重复下载（示例）：
+docker run --gpus all -v "$HOME/scratch/.cache/huggingface":/root/.cache/huggingface -v "$PWD":/workspace -it your_image bash
+
+
+[ERROR] 推理失败 pop.00000：tuple indices must be integers or slices, not tuple
+
+
+
+Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption_test.py --device cuda --max-new-tokens 256 --fl
+ash-attn2
+multi-gpu don't need --force-gpu
+- Tried with 2 H100, 256GB CPU RAM
+- need to change source code of Qwen to be be with bfloat16, instead of the default float32
+- need to change device_map to "auto"
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 575.57.08              Driver Version: 575.57.08	   CUDA Version: 12.9     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:87:00.0 Off |                    0 |
+| N/A   49C    P0            145W /  700W |   80745MiB /  81559MiB |	  0%	  Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H100 80GB HBM3          On  |   00000000:90:00.0 Off |                    0 |
+| N/A   38C    P0            154W /  700W |   42299MiB /  81559MiB |	  0%	  Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage	  |
+|=========================================================================================|
+|    0   N/A  N/A         3291410      C   python                                80736MiB |
+|    1   N/A  N/A         3291410      C   python                                42290MiB |
++-----------------------------------------------------------------------------------------+
+
+
+
+"scratch/datasets/GTZAN_Dataset/Data/genres_original"
+
+
+python pipelines/prompt_generation/qwen3-omni/qwen_omni_prepare_prompts.py --input-root data/output/separated/GTZAN_Dataset/country --output-file omni_prompts_batch_hiphop.json --prompt "This is a vocal solo track from a source separated hiphop music, describe the tempo, main melody rhythm, style, emotions, main theme of the lyrics , and melodic contour of the piece. "
+
+

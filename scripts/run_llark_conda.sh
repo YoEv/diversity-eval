@@ -32,7 +32,7 @@ eval "$(conda shell.bash hook)"
 conda activate llark
 
 # Navigate to LLark directory
-cd /home/evev/diversity-eval/external/llark
+cd /home/hice1/xli3252/Desktop/diversity-eval/external/llark
 
 echo "Running LLark command: $COMMAND"
 

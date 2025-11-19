@@ -1,0 +1,34 @@
+---------------------------------------
+Begin Slurm Prolog: Oct-28-2025 01:41:01
+Job ID:    3468906
+User ID:   xli3252
+Account:   musi
+Job name:  llark_setup
+Partition: coe-gpu
+QOS:       coe-ice
+---------------------------------------
+=== SLURM Job Information ===
+Job ID: 3468906
+Job Name: llark_setup
+Node: atl1-1-03-013-3-0
+Partition: coe-gpu
+Account: musi
+CPUs: 4
+Memory: 16384 MB
+GPU: 0
+Start Time: Tue Oct 28 01:41:01 EDT 2025
+Working Directory: /home/hice1/xli3252/Desktop/diversity-eval
+==========================
+Loading required modules...
+---------------------------------------
+Begin Slurm Epilog: Oct-28-2025 01:41:24
+Job ID:        3468906
+User ID:       xli3252
+Account:       musi
+Job name:      llark_setup
+Resources:     cpu=4,gres/gpu:h100=1,mem=16G,node=1
+Rsrc Used:     cput=00:01:32,vmem=0,walltime=00:00:23,mem=84812K,energy_used=0
+Partition:     coe-gpu
+QOS:           coe-ice
+Nodes:         atl1-1-03-013-3-0
+---------------------------------------

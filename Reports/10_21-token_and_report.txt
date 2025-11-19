@@ -1,0 +1,224 @@
+llama2-hf: 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
+
+llark使用的基础环境设置：pipelines/prompt_generation/setup_llark_env.sh，之后需要根据optimize文件，进行相应的补充，NumPy应<2.0
+- NumPy兼容性问题已解决
+- einops模块已安装
+- protobuf版本问题已解决
+
+meta-llama/Llama-2-7b-chat-hf不能直接从hf下载，只能从meta下载。
+
+现已申请完成，并下载好在external/llama-2-7b-chat
+
+optimized 模型不可用是因为从meta下载的weight的格式不可以optimize，且不能被直接使用。
+
+DEBUG Process：
+整体来说，最大的错误是同时使用CPU和GPU的时候，发生了。。。未对齐；环境错误；encode格式错误，格式不匹配，索引超出范围等 - 这个在不同的实验中经常会发生。拥有了一个好习惯就是，一定要写report，留备份，以免改了两个小时之后才发现错误，然后又倒回去重新修改，并且有可能重新搭建环境。
+1. Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: cannot unpack non-iterable NoneType object
+- .npy 数据格式报错，fixed in conversation_utils.py
+2. Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: Expected all tensors to be on the same device, but got mat1 is on cuda:0, different from other tensors on cpu (when checking argument in method wrapper_CUDA_addmm)
+- 由于CPU/GPU混合使用来带的问题
+- 修改了 infer_from_encodings_optimized.py ：删除了手动移动模型的代码
+- 2.改进了 infer.py 中的设备处理 ：更安全地获取设备信息，跳过meta设备
+- 3.修改了 llamav2.py 中的设备移动逻辑 ：添加了错误处理和设备对齐
+- 4.改进了 utils.py 中的权重加载 ：确保mm_projector权重被加载到正确的设备- 
+增加更多调试信息，尝试定位不匹配的具体位置：
+- 1. 删除了 infer_from_encodings_optimized.py 中的手动设备移动 ：
+- 移除了 model.to(device) 和 mm_projector.to(device) 调用
+- 保留了 low_memory=True 设置
+- 2.改进了 infer.py 中的智能设备处理 ：
+- 添加了详细的设备调试信息
+- 改进了 mm_projector 设备检测逻辑
+- 确保输入张量被移动到正确的设备
+- 3.修改了 llamav2.py 中的设备移动逻辑 ：
+- 在 mm_projector 调用前确保 audio_encodings 和权重在同一设备
+- 在 torch.cat 操作前确保所有张量在同一设备
+- 添加了详细的设备调试信息
+- 4.改进了 utils.py 中的 mm_projector 权重加载 ：
+- 改进了设备检测逻辑，优先使用嵌入层设备
+- 确保 mm_projector 模块本身也被移动到正确的设备
+- 添加了更健壮的错误处理
+解决了：
+Some parameters are on the meta device because they were offloaded to the cpu.
+[INFO] ignoring parameter fsdp
+Using pad_token, but it is not set yet.
+[INFO] Set pad_token to eos_token: </s>
+[INFO] Found 20 encoding files. Sample: ['/home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy', '/home/evev/diversity-eval/data/output/llark_encodings/dafeh-Bi_yun_tian-Xi_xiang_ji01-qm_002_15s.npy', '/home/evev/diversity-eval/data/output/llark_encodings/daxp-Chun_qiu_ting-Suo_lin_nang01-qm_006_15s.npy']
+Found 1 audio encoding files
+  0%|                                                                               | 0/1 [00:00<?, ?it/s]Warning: Could not find end_seq [13, 2277, 29937, 4007, 22137, 29901] in input_ids; using full input_ids
+[DEBUG] embed_device: cuda:0
+[DEBUG] input_ids original device: cpu
+[DEBUG] input_ids moved to: cuda:0
+[DEBUG] Found mm_projector device: cpu
+[DEBUG] audio_encoding original device: cpu
+[DEBUG] audio_encoding moved to: cpu
+[DEBUG] audio_encodings device: cuda:0
+[DEBUG] mm_projector weight device: cpu
+[DEBUG] mm_projector bias device: cpu
+[DEBUG] Moving audio_encodings from cuda:0 to cpu
+[DEBUG] audio_features device after mm_projector: cpu
+- embed_device: cuda:0 - 嵌入层在GPU上
+- mm_projector device: cpu - mm_projector在CPU上（这是正常的，因为低内存模式）
+- audio_encoding 被正确移动到CPU以匹配mm_projector
+- audio_features 在mm_projector处理后也在CPU上
+
+3. Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: The number of image start tokens and image end tokens should be the same.
+[DEBUG] audio_start_token: 32001
+[DEBUG] audio_end_token: 32002
+[DEBUG] audio_start_count: 1
+[DEBUG] audio_end_count: 0
+[DEBUG] cur_input_ids shape: torch.Size([4096])
+[DEBUG] cur_input_ids: tensor([    1,   319, 13563,  ..., 32000, 32000, 32000], device='cuda:0')
+[DEBUG] Audio start token (32001) found at positions: (tensor([38], device='cuda:0'),)
+[DEBUG] Audio end token (32002) found at positions: (tensor([], device='cuda:0', dtype=torch.int64),)
+[DEBUG] Number of audio start tokens: 1
+[DEBUG] Number of audio end tokens: 0
+[DEBUG] cur_input_ids shape: torch.Size([4096])
+[DEBUG] cur_input_ids content (first 50 tokens): [1, 319, 13563, 1546, 263, 12758, 5199, 322, 385, 23116, 21082, 20255, 29889, 450, 20255, 4076, 8444, 29892, 13173, 29892, 322, 1248, 568, 6089, 304, 278, 5199, 29915, 29879, 5155, 29889, 13, 13, 2277, 29937, 12968, 29901, 29871, 32001, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+
+4. Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: The number of audio start tokens (1) and audio end tokens (0) should be the same.
+- 1.音频标记替换正确 ： preprocess_multimodal_mappable 函数正确地将 <audio> 标记替换为 <audio_start> + 多个 <audio_patch> + <audio_end> 的序列。
+- 2.截断导致结束标记丢失 ：在 _tokenize_fn 函数中，由于设置了 max_length=tokenizer.model_max_length 和 truncation=True ，当对话文本超过4096个token时会被截断。音频结束标记通常位于序列的末尾，因此在截断时被丢失了。
+- 3.验证失败 ：在 llamav2.py 中的验证逻辑检查音频开始和结束标记的数量是否相等，由于结束标记被截断，导致数量不匹配（开始标记：1，结束标记：0）。
+解决方案
+- 修改了 _tokenize_fn 函数，添加了特殊处理逻辑：
+- 1.检测截断情况 ：当标记化后的长度等于最大长度时，说明发生了截断。
+- 2.检查音频结束标记 ：如果原始文本包含音频结束标记，但截断后的序列中没有，则需要恢复。
+- 3.恢复结束标记 ：将序列末尾的最后一个token替换为音频结束标记，确保开始和结束标记数量匹配。
+
+5. Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: index 5186 is out of bounds for dimension 0 with size 4096
+新的错误出现了，久的audio token end 的position也找到了
+[DEBUG] audio_start_token: 32001
+[DEBUG] audio_end_token: 32002
+[DEBUG] audio_start_count: 1
+[DEBUG] audio_end_count: 1
+[DEBUG] cur_input_ids shape: torch.Size([4096])
+[DEBUG] cur_input_ids: tensor([    1,   319, 13563,  ..., 32000, 32000, 32002], device='cuda:0')
+[DEBUG] Audio start token (32001) found at positions: (tensor([38], device='cuda:0'),)
+[DEBUG] Audio end token (32002) found at positions: (tensor([4095], device='cuda:0'),)
+[DEBUG] Number of audio start tokens: 1
+[DEBUG] Number of audio end tokens: 1
+[DEBUG] cur_input_ids shape: torch.Size([4096])
+[DEBUG] cur_input_ids content (first 50 tokens): [1, 319, 13563, 1546, 263, 12758, 5199, 322, 385, 23116, 21082, 20255, 29889, 450, 20255, 4076, 8444, 29892, 13173, 29892, 322, 1248, 568, 6089, 304, 278, 5199, 29915, 29879, 5155, 29889, 13, 13, 2277, 29937, 12968, 29901, 29871, 32001, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+根据调试信息：
+- audio_start_token_pos = 38
+- num_frames = 5148 (从音频编码的形状推断)
+- 所以访问的索引是：38 + 5148 + 1 = 5187
+但是 cur_input_ids 的长度只有 4096，所以索引 5187 超出了范围。
+问题分析
+- 1.音频编码长度过大 ： audio_token_len 从音频编码的形状计算得出，大约是5148。
+- 2.替换标记过长 ： replace_token = DEFAULT_AUDIO_START_TOKEN + (DEFAULT_AUDIO_PATCH_TOKEN * 5148) + DEFAULT_AUDIO_END_TOKEN ，这创建了一个包含5150个标记的序列。
+- 3.文本截断问题 ：当这个长序列被插入到对话中时，总长度远超过4096的限制，导致文本被截断。
+- 4.索引越界 ：在模型处理时，代码期望在音频开始标记后的5148个位置找到结束标记，但由于截断，这个位置不存在。
+解决方案
+我需要在 _get_audio_token_len 函数中添加一个合理的上限，确保音频标记序列不会太长：
+
+6. Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: index 5186 is out of bounds for dimension 0 with size 3060
+ 
+[DEBUG] cur_input_ids shape: torch.Size([3060])
+[DEBUG] cur_input_ids: tensor([    1,   319, 13563,  ...,  4007, 22137, 29901], device='cuda:0')
+[DEBUG] Audio start token (32001) found at positions: (tensor([38], device='cuda:0'),)
+[DEBUG] Audio end token (32002) found at positions: (tensor([3039], device='cuda:0'),)
+[DEBUG] Number of audio start tokens: 1
+[DEBUG] Number of audio end tokens: 1
+[DEBUG] cur_input_ids shape: torch.Size([3060])
+[DEBUG] cur_input_ids content (first 50 tokens): [1, 319, 13563, 1546, 263, 12758, 5199, 322, 385, 23116, 21082, 20255, 29889, 450, 20255, 4076, 8444, 29892, 13173, 29892, 322, 1248, 568, 6089, 304, 278, 5199, 29915, 29879, 5155, 29889, 13, 13, 2277, 29937, 12968, 29901, 29871, 32001, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000, 32000]
+根本原因： 索引越界错误是由于模型代码中的 num_frames 计算方式错误造成的：
+- 1.原始问题： 在 mpt.py 第129行， num_frames = cur_audio_features.shape[0] 获取的是原始音频特征的帧数（约5148）
+- 2.数据处理限制： 在 data_modules.py 中，我们将音频标记数量限制为3000，所以实际的音频patch标记数量是3000
+- 3.索引计算错误： 在第150行检查音频结束标记时，使用原始的 num_frames （5148）计算索引： audio_start_token_pos + num_frames + 1 = 38 + 5148 + 1 = 5187 ，但 cur_input_ids 只有3060个元素
+解决方案： 修改 mpt.py 中的 num_frames 计算逻辑，使其基于 input_ids 中实际的音频patch标记数量，而不是原始音频特征的帧数：
+- 1.找到对应的音频结束标记位置
+- 2.计算开始和结束标记之间的实际距离： num_frames = audio_end_token_pos - audio_start_token_pos - 1
+- 3.这样确保索引计算基于实际的序列长度
+
+7.Error processing /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: The size of tensor a (3060) must match the size of tensor b (5207) at non-singleton dimension 3 
+[DEBUG] Target device for concatenation: cuda:0
+[DEBUG] cur_audio_features device: cuda:0
+问题的根本原因是在循环内部， cur_audio_features 被重新赋值为原始的 audio_features[cur_audio_idx] （5147帧），覆盖了我们之前的截断操作（3000帧）。这导致在 torch.cat 操作中，期望的张量大小与实际大小不匹配。
+
+8.GPU OOM error for /home/evev/diversity-eval/data/output/llark_encodings/daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s.npy: CUDA out of memory. Tried to allocate 1.12 GiB. GPU 0 has a total capacity of 11.64 GiB of which 636.81 MiB is free. Including non-PyTorch memory, this process has 11.01 GiB memory in use. Of the allocated memory 10.74 GiB is allocated by PyTorch, and 140.37 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[WARN] Cannot reduce max_new_tokens further; skipping sample.
+- 减少音频帧数，还没有到max token length的部分。
+
+9. 开始有输出，但是输出的是乱码/站位符/或者没有意义的词：
+跑出来了！但是没有任何的结果：
+[PROMPT]
+Describe this audio.
+[MODEL COMPLETION]
+<unk><unk><unk> accept
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+这个是我的argument：
+(llark) evev@beluga:~/diversity-eval$ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 python external/llark/scripts/inference/infer_from_encodings_optimized.py --audio-encodings-dir /home/evev/diversity-eval/data/output/llark_encodings --model_name_or_path /home/evev/diversity-eval/external/llark/checkpoints/meta-llama/Llama-2-7b-chat-hf --ckpt-num 100000 --prompt "Describe this audio." --outfile /home/evev/diversity-eval/data/output/llark_prompts/infer_results.csv --max_samples 1 --max-new-tokens 4 --output_dir data/output/llark_prompts
+
+在原来的argument下：
+(llark) evev@beluga:~/diversity-eval$ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 python external/llark/scripts/inference/infer_from_encodings_optimized.py --audio-encodings-dir /home/evev/diversity-eval/data/output/llark_encodings --model_name_or_path /home/evev/diversity-eval/external/llark/checkpoints/meta-llama/Llama-2-7b-chat-hf --ckpt-num 100000 --prompt "Describe this audio." --outfile /home/evev/diversity-eval/data/output/llark_prompts/infer_results.csv --max_samples 1 --max-new-tokens 32 --output_dir data/output/llark_prompts
+loading model and data...
+生成结果，这个结果比max new token 4 更多了，但是还是只有符号，以及多了一个”Ro“：
+[PROMPT]
+Describe this audio.
+[MODEL COMPLETION]
+<unk><unk><unk> Ro<unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+我们进行了两个关键修复：
+- 1. Chat模板格式 ：使用正确的 Llama-2-Chat 格式 [INST]...[/INST]
+- 2. 解码修复 ：在 tokenizer.decode() 中添加：
+   - skip_special_tokens=True - 跳过 <unk> 等特殊token
+   - .strip() - 去除首尾空白
+- 3.生成参数优化 ：
+- 启用采样： do_sample=True
+- 增加温度： temperature=0.7 （增加随机性）
+- 保持 top_p=0.9 和 top_k=50
+- 添加重复惩罚： repetition_penalty=1.1
+- 4.移除过严停止条件 ：
+- 注释掉 KeywordsStoppingCriteria
+- 避免因 "###" 关键词导致的过早停止
+- 5.简化Chat模板 ：
+- 使用更直接的指令格式
+- 避免复杂的系统提示词
+
+10. 剩下的就是调整prompt
+example_id,prompt_text,model_completion_text
+daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s,What is the music?,mil� AppUNdataily���ados wh
+dafeh-Bi_yun_tian-Xi_xiang_ji01-qm_002_15s,What is the music?,mil� AppUNdatayily���ados
+ whW centname1ваL
+daxp-Chun_qiu_ting-Suo_lin_nang01-qm_006_15s,What is the music?,mils AppUNdataily���ados wh
+
+
+example_id,prompt_text,model_completion_text
+daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s,[INST] Listen to this audio and describe what you hear in one sentence. [/INST],genpport1átmyraw
+dafeh-Bi_yun_tian-Xi_xiang_ji01-qm_002_15s,[INST] Listen to this audio and describe what you hear in one sentence. [/INST],b seizoen dur
+daxp-Chun_qiu_ting-Suo_lin_nang01-qm_006_15s,[INST] Listen to this audio and describe what you hear in one sentence. [/INST],4 seizoen dur
+pop.00000 (Vocals),[INST] Listen to this audio and describe what you hear in one sentence. [/INST],ità��mail����� Yw
+pop.00001 (Vocals),[INST] Listen to this audio and describe what you hear in one sentence. [/INST],itàmail@7R YD
+
+example_id,prompt_text,model_completion_text
+daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],self diverses
+dafeh-Bi_yun_tian-Xi_xiang_ji01-qm_002_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+daxp-Chun_qiu_ting-Suo_lin_nang01-qm_006_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+pop.00000 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stack
+ і������ving������
+pop.00001 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stack] іR8ving������
+pop.00002 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stackW і.cving������
+pop.00003 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],"stack і|VX""#vingoi
+-j/"
+pop.00004 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stack і������vingi=
+pop.00005 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],"stack� і,@9ving������"
+pop.00006 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stack і������ving������
+pop.00007 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stack і^Yving
+pop.00008 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],stackE іZ.+ving
+pop.00009 (Vocals),[INST] Listen to this audio and describe the genre of the music. [/INST],"stack іfis����vingi
+`"
+shiwenhui_tingxiongyan_004_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+shiwenhui_tingxiongyan_005_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],А�
+xixiangji_biyuntian_001_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],А�
+xixiangji_xianzhishuo_008_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+xixiangji_xianzhishuo_010_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+yutangchun_yutangchun_007_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+zhuangyuanmei_zinari_011_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],reprónigh
+
+example_id,prompt_text,model_completion_text
+daeh-Yi_sha_shi-Suo_lin_nang-qm_004_15s,[INST] Listen to this audio and describe the genre of the music. [/INST],ving陽ielnofably Integrytu focused“ dedu oldgio Ayiostream electionжуovistac </daTwont gleastoffTextDanritt manager nahm求
+
+next step：
+- 直接上scale，用大memory的GPU

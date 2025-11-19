@@ -326,3 +326,139 @@ LLark provides three Docker environments for different use cases:
 }
 ```
 
+
+## LLark - Multimodal Instruction-Following Language Model for Music
+
+LLark is a multimodal instruction-following language model for music developed by Spotify Research. It can understand and generate music based on natural language instructions.
+
+### Features
+- **Multimodal Understanding**: Processes both audio and text inputs
+- **Instruction Following**: Generates music based on natural language prompts
+- **Music Embeddings**: Creates rich representations of musical content
+- **Research-Grade**: State-of-the-art model from Spotify Research
+
+### Location
+- **Path**: `external/llark/`
+- **Repository**: https://github.com/spotify-research/llark
+- **Conda Environment**: `llark`
+
+### Setup (Conda Environment)
+Run the setup script to create a dedicated conda environment:
+```bash
+./scripts/setup_llark_conda.sh
+```
+
+This will:
+1. Clone the LLark repository to `external/llark/`
+2. Create a conda environment named `llark` with Python 3.9
+3. Install PyTorch, Transformers, and music processing libraries
+4. Install Apache Beam for data processing
+5. Set up integration scripts
+
+### Environment Management
+Use the environment management script:
+```bash
+# Activate LLark environment
+./scripts/manage_llark_env.sh activate
+
+# Deactivate environment
+./scripts/manage_llark_env.sh deactivate
+
+# List all environments
+./scripts/manage_llark_env.sh list
+
+# Remove LLark environment
+./scripts/manage_llark_env.sh remove
+
+# Show environment info
+./scripts/manage_llark_env.sh info
+
+# Start Jupyter notebook
+./scripts/manage_llark_env.sh jupyter
+```
+
+### Usage
+
+#### Using the conda-aware integration script:
+```bash
+# Generate music embeddings
+./scripts/run_llark_conda.sh embed /path/to/audio.wav embeddings.npy
+
+# Generate music from instruction
+./scripts/run_llark_conda.sh instruct "Create a happy jazz melody" output.wav
+
+# Preprocess audio data
+./scripts/run_llark_conda.sh preprocess input_dir/ output_dir/
+
+# Train model (if supported)
+./scripts/run_llark_conda.sh train config.yaml
+```
+
+#### Direct usage with conda environment:
+```bash
+# Activate environment
+conda activate llark
+
+# Navigate to LLark directory
+cd external/llark
+
+# Run LLark scripts
+python scripts/preprocessing/your_script.py
+
+# Generate embeddings
+python -c "from m2t import LLark; model = LLark(); embeddings = model.embed('audio.wav')"
+
+# Deactivate environment
+conda deactivate
+```
+
+### Integration with Pipeline
+
+#### Embedding Generation
+LLark can be used in the embedding pipeline:
+```bash
+python pipelines/embedding/llark_embedding.py --input audio.wav --output embedding.npy --type audio
+```
+
+#### Instruction-Following Music Generation
+Use LLark for instruction-based music generation in the music_llms pipeline.
+
+### Docker Environments (Advanced)
+LLark provides three Docker environments for different use cases:
+- `m2t-train.dockerfile`: Model training and inference
+- `m2t-preprocess.dockerfile`: Data preprocessing with Apache Beam
+- `jukebox-embed.dockerfile`: Jukebox embedding extraction
+
+### Dependencies (Conda Environment)
+- Python 3.9
+- PyTorch (with CUDA support)
+- Transformers
+- Apache Beam (for data processing)
+- Librosa (audio processing)
+- Music21, Pretty MIDI (music processing)
+- NumPy, SciPy, Pandas (data science)
+- Jupyter (for notebooks)
+
+### Research Applications
+- **Music Understanding**: Analyze musical content and structure
+- **Instruction-Following**: Generate music from natural language descriptions
+- **Multimodal Learning**: Combine audio and text for music tasks
+- **Music Embeddings**: Create rich representations for downstream tasks
+
+### Notes
+- **Research Model**: This is a research implementation, not a production service
+- **No Pre-trained Models**: The repository contains training code but no pre-trained models
+- **Cloud Processing**: Data preprocessing can use Google Cloud Dataflow for scalability
+- **Evaluation**: Includes evaluation notebooks for reproducibility
+- **Citation Required**: Please cite the ICML 2024 paper when using this code
+
+### Citation
+```bibtex
+@article{gardner2023llark,
+  title={LLark: A Multimodal Instruction-Following Language Model for Music},
+  author={Gardner, Josh and Durand, Simon and Stoller, Daniel and Bittner, Rachel},
+  journal={Proc. of the International Conference on Machine Learning (ICML)},
+  year={2024}
+}
+```
+

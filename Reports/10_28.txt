@@ -1,0 +1,207 @@
+llama-hf-ice token: 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
+
+Things to do on your first time on PACE
+
+    Set Anaconda Symlink
+
+    Changing the Anaconda symlink is necessary to make sure that you can use Anaconda. Many Anaconda environments take up multiple GBs of space, which means that it's not practical using them on your personal storage on PACE since that is restricted to only 15GB. This can be fixed using the following command from ~.
+
+    mkdir ./scratch/.conda
+    ln -s $(pwd)/scratch/.conda ~/.conda
+    What this does is that everytime you create a new environment or install a package, your packages are now installed inside scratch, which has 300GB, and the .conda folder inside ~ points to ./scratch/.conda.
+
+    Set .cache symlink
+
+    Changing the .cache symlink is necessary to make sure that you can use libraries that save models into this folder like PyTorch and huggingface. Models can take up multiple GBs of space, which means that it's not practical using them on your personal storage on PACE since that is restricted to only 15GB. This can be fixed using the following command from ~.
+
+    mkdir ./scratch/.cache
+    ln -s $(pwd)/scratch/.cache ~/.cache
+
+Apply for gpu：srun --account=musi --qos=coe-ice --partition=coe-gpu --gres=gpu:1 --time=4:00:00 --mem=32G --cpus-per-task=4 --pty bash
+module load anaconda3/2023.03
+module load cuda/11.8
+conda activate llark
+
+[xli3252@atl1-1-03-018-2-0 llark]$ squeue -u $USER
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           3469944   coe-gpu     bash  xli3252  R       0:12      1 atl1-1-03-018-2-0
+           3469942   coe-gpu     bash  xli3252  R       0:37      1 atl1-1-03-017-2-0
+
+watch -n 1 nvidia-smi
+
+setup env success: scripts/setup_llark_conda.sh
+
+git pull
+git submodule update --init --external/llark
+git submodule update --init --external/basic-pitch-torch
+
+download llama2-7b success: external/llark/process/download_real_checkpoint.py
+
+test env and model config：
+    pipelines/prompt_generation/test_llark_infer.sh
+    # 安装einops和其他可能缺失的包
+    pip install einops==0.6.1
+    # 检查并安装其他可能需要的包
+    pip install sentencepiece
+    pip install protobuf==5.26.1
+    pip install accelerate==0.20.3
+
+    make sure all module loads and package compatible
+
+one more test:
+    scripts/test_llark_import.py
+
+processing prompt generator in demo mode：
+    pipelines/prompt_generation/llark_prompt_generator.py
+    python llark_prompt_generator.py \
+        --gtzan_pop_dir /home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Data/genres_original/pop \
+        --output_dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_prompts \
+        --model_path /home/hice1/xli3252/Desktop/diversity-eval/external/llark/checkpoints/meta-llama/Llama-2-7b-chat-hf \
+        --prompt_types detailed_description musical_analysis creative_description
+    output：
+    data/output/llark_prompts/demo_prompts.json
+
+
+processing REAL prompt generator in test mode：
+    pipelines/prompt_generation/llark_prompt_generator.py
+    python llark_prompt_generator.py \
+        --gtzan_pop_dir /home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Data/genres_original/pop \
+        --output_dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_prompts \
+        --model_path /home/hice1/xli3252/Desktop/diversity-eval/external/llark/checkpoints/meta-llama/checkpoint-100000 \
+        --prompt_types detailed_description musical_analysis creative_description \
+        --max_files 1
+    python llark_prompt_generator.py \
+        --gtzan_pop_dir /home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Data/genres_original/pop \
+        --output_dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_prompts \
+        --model_path /home/hice1/xli3252/Desktop/diversity-eval/external/llark/checkpoints/meta-llama/Llama-2-7b-chat-hf \
+        --prompt_types detailed_description musical_analysis creative_description \
+        --max_files 1
+    Failed
+
+Embedding First，and the old pipelines/embedding/llark_embedding.py was wrong and generated random embeddings. 
+Try a small librosa version first and then to setup jukebox
+python pipelines/embedding/llark_embedding.py \
+    --input-dir /home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Data/genres_original/pop \
+    --output-dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_encodings \
+    --max-files 3
+
+processing model inference in test mode：
+PYTHONPATH=/home/hice1/xli3252/Desktop/diversity-eval/external/llark python scripts/inference/infer_from_encodings.py \
+    --audio-encodings-dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_encodings_official \
+    --model_name_or_path checkpoints/meta-llama \
+    --ckpt-num 100000 \
+    --output_dir tmp \
+    --max-samples 3 \
+    --prompt "Describe this music:" \
+    --outfile /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_results.csv
+
+    UnboundLocalError: local variable 'model' referenced before assignment
+    fixed: external/llark/m2t/models/utils.py    elif "meta-llama" in model_name or "Llama-2" in model_name:
+
+    AttributeError: 'WrappedLlamav2Config' object has no attribute 'tune_mm_mlp_adapter'
+    fixed：external/llark/m2t/models/llamav2.py    tune_mm_mlp_adapter: bool = False  # whether to tune the multimodal MLP adapter
+
+    ValueError: Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`.
+    fixed: external/llark/m2t/models/utils.py    修改 load_pretrained_model 函数，在tokenizer加载后添加pad_token的设置
+        if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    OverflowError: int too big to convert
+    配置embedding，同时调整可以process地模型输出，还是需要Jukebox embedding - https://github.com/openai/jukebox#
+    设置jukebox环境：external/llark/setup_official_jukebox.sh - 注意这个里面的路径设置不对，不需要download模型的部分，环境搭建好后，可以直接运行main.py
+    utilizing external/llark/jukebox/main.py for local embedding
+    (jukebox) [xli3252@atl1-1-03-011-28-0 llark]$ python jukebox/main.py     --input_dir /home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Data/genres_original/pop     --output_dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_encodings_official
+
+    绕过MPI使用 - fixed
+
+    batch size = 1 - fixed
+
+    AssertionError: Default process group is not initialized
+    修改了 dist_adapter.py 中的 is_available() 函数，现在它会同时检查：
+        - dist.is_available() - 分布式是否可用
+        - dist.is_initialized() - 分布式是否已初始化
+
+    映射问题 - RuntimeError: cuDNN error: CUDNN_STATUS_MAPPING_ERROR - 更新调试信息
+
+    RuntimeError: cuDNN error: CUDNN_STATUS_EXECUTION_FAILED
+    GPU版本过高与pytorch不兼容：使用V100: (.venv) [xli3252@login-ice-1]~/Desktop/diversity-eval% srun --partition=ice-gpu --gres=gpu:1 --time=4:00:00 --mem=16G --cpus-per-task=4 --pty bash
+
+    python jukebox/main.py --input_dir /home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Data/genres_original/pop --output_dir /home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_encodings_official
+    Processing audio shape: (1048576,)
+    Audio dtype: float32
+    GPU memory before encoding: 5073.7 MB
+    Audio tensor shape: torch.Size([1, 1048576, 1])
+    Audio tensor device: cuda:0
+    Audio tensor dtype: torch.float32
+    Encoding successful, zs length: 3
+    WARNING:root:mean pooling at f=10
+
+同样的报错，已经使用H200和Jukebox encodings - OverflowError: int too big to convert
+检查： debug_llark_inference.py
+Fixed - maxtoken = 512
+
+为什么H200也慢，有可能是因为网络硬盘，读写有限。增加batch size可能会有帮助。
+
+不知道需不需要json格式的输出：llark_json_inference.py
+
+
+TypeError: cannot unpack non-iterable NoneType object
+
+
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ ssh-keygen -t ed25519 -C "xli3252@gatech.edu"
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/hice1/xli3252/.ssh/id_ed25519): diversity-eval
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in diversity-eval
+Your public key has been saved in diversity-eval.pub
+The key fingerprint is:
+SHA256:mOqQJD7VdvNbaidkyxKGZIEjORlkd6Y95hL4jKpDn6Y xli3252@gatech.edu
+The key's randomart image is:
++--[ED25519 256]--+
+|.++..o           |
+|.=oo=.           |
+| .oo.+.          |
+|  + =o.o         |
+|...=o++oS        |
+|o+..oo.ooo       |
+|oo+ o . =...     |
+|o .*   . =+.     |
+|.Eo .   ooo      |
++----[SHA256]-----+
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+Agent pid 435572
+/home/hice1/xli3252/.ssh/id_ed25519: No such file or directory
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ cat ~/.ssh/id_ed25519.pub
+cat: /home/hice1/xli3252/.ssh/id_ed25519.pub: No such file or directory
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ ls -la diversity-eval*
+-rw-------. 1 xli3252 gtperson 411 Oct 28 16:21 diversity-eval
+-rw-r--r--. 1 xli3252 gtperson 100 Oct 28 16:21 diversity-eval.pub
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ mkdir -p ~/.ssh
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ mv diversity-eval ~/.ssh/id_ed25519
+mv diversity-eval.pub ~/.ssh/id_ed25519.pub
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ ssh-add ~/.ssh/id_ed25519
+Identity added: /home/hice1/xli3252/.ssh/id_ed25519 (xli3252@gatech.edu)
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ cat ~/.ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIItK+FrEhgzoG+TqxJhhxd8DxDHbUop1/U+d8I3uLV9O xli3252@gatech.edu
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ ssh -T git@github.com
+Hi YoEv! You've successfully authenticated, but GitHub does not provide shell access.
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ git remote set-url origin git@github.com:YoEv/llark.git
+(llark) [xli3252@atl1-1-03-017-2-0 llark]$ git push --set-upstream origin fix-llark-inference
+Enumerating objects: 45, done.
+Counting objects: 100% (45/45), done.
+Delta compression using up to 64 threads
+Compressing objects: 100% (35/35), done.
+Writing objects: 100% (35/35), 31.28 KiB | 2.61 MiB/s, done.
+Total 35 (delta 11), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (11/11), completed with 9 local objects.
+remote: 
+remote: Create a pull request for 'fix-llark-inference' on GitHub by visiting:
+remote:      https://github.com/YoEv/llark/pull/new/fix-llark-inference
+remote: 
+To github.com:YoEv/llark.git
+ * [new branch]      fix-llark-inference -> fix-llark-inference
+branch 'fix-llark-inference' set up to track 'origin/fix-llark-inference'.

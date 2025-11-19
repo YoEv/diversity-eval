@@ -1,0 +1,19 @@
+Apply for gpu：srun --account=musi --qos=coe-ice --partition=coe-gpu --gres=gpu:1 --time=4:00:00 --mem=32G --cpus-per-task=4 --pty bash
+
+我现在要做一个sourse separation，应该是很简单的，创造一个环境叫做htdemucs - 根据 和以及里面的代码。
+1. clone到external
+2. 搭建环境
+3. python文件处理音频的写到pipelines/source_separation里：需要有相应的argument，并default是input = data/input/GTZAN_Dataset/Data/genres_original/pop， output = data/output/separated 
+
+git clone https://github.com/facebookresearch/demucs external/demucs
+conda create -n htdemucs -y python=3.10
+conda activate htdemucs
+conda install -y pytorch torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+pip install joblib pooch scikit-learn
+pip install soundfile mir_eval
+pip install torchcodec
+conda install -y "ffmpeg<8" -c conda-forge
+
+如果你希望用 Demucs 的官方 CLI（作为备选），可在环境里安装并运行
+pip install demucs
+demucs -n htdemucs -o data/output/separated data/input/GTZAN_Dataset/Data/genres_original/pop/*.wav

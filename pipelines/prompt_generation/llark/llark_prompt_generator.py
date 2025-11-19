@@ -18,7 +18,10 @@ import transformers
 from tqdm import tqdm
 
 # 添加 LLark 路径
-sys.path.append('/home/evev/diversity-eval/external/llark')
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(current_dir, '..', '..')
+llark_path = os.path.join(project_root, 'external', 'llark')
+sys.path.append(llark_path)
 
 from m2t.arguments import DataArguments, ModelArguments, TrainingArguments
 from m2t.conversation_utils import extract_response_tokens
@@ -63,11 +66,39 @@ class LLarkPromptGenerator:
             return False
             
         try:
-            print(f"Loading LLark model from {self.model_path}...")
-            self.model, self.tokenizer = load_pretrained_model(
-                self.model_path, 
-                ckpt_num=self.ckpt_num
-            )
+            # LLark的load_pretrained_model期望的路径结构是: model_name/checkpoint-{ckpt_num}
+            # 我们需要调整路径以匹配这个结构
+            if self.ckpt_num is None:
+                # 如果没有指定ckpt_num，直接使用提供的路径作为checkpoint目录
+                checkpoint_dir = self.model_path
+                print(f"Loading LLark model from checkpoint directory: {checkpoint_dir}")
+                
+                # 直接从checkpoint目录加载
+                from transformers import AutoTokenizer, AutoModelForCausalLM
+                self.tokenizer = AutoTokenizer.from_pretrained(checkpoint_dir)
+                
+                # 根据模型类型选择正确的模型类
+                if "meta-llama/Llama-2" in checkpoint_dir or "Llama-2" in checkpoint_dir:
+                    from m2t.models.llamav2 import WrappedLlamav2ForCausalLM
+                    self.model = WrappedLlamav2ForCausalLM.from_pretrained(
+                        checkpoint_dir,
+                        torch_dtype=torch.float16,
+                    )
+                    # 初始化适配器模块
+                    self.model.get_model().initialize_adapter_modules(tune_mm_mlp_adapter=False, fsdp=None)
+                else:
+                    # 使用通用的AutoModel
+                    self.model = AutoModelForCausalLM.from_pretrained(
+                        checkpoint_dir,
+                        torch_dtype=torch.float16,
+                    )
+            else:
+                # 使用原始的load_pretrained_model函数
+                print(f"Loading LLark model from {self.model_path} with checkpoint {self.ckpt_num}...")
+                self.model, self.tokenizer = load_pretrained_model(
+                    self.model_path, 
+                    ckpt_num=self.ckpt_num
+                )
             
             # 设置数据参数
             data_args = DataArguments()
@@ -174,7 +205,7 @@ class LLarkPromptGenerator:
                 "success": False
             }
     
-    def process_gtzan_pop_directory(self, gtzan_pop_dir: str, output_dir: str, prompt_types: List[str] = None):
+    def process_gtzan_pop_directory(self, gtzan_pop_dir: str, output_dir: str, prompt_types: List[str] = None, max_files: int = None):
         """
         处理 GTZAN pop 目录下的所有音频文件
         
@@ -182,6 +213,7 @@ class LLarkPromptGenerator:
             gtzan_pop_dir: GTZAN pop 音频目录
             output_dir: 输出目录
             prompt_types: 要生成的提示类型列表
+            max_files: 最大处理文件数量
         """
         if prompt_types is None:
             prompt_types = ['detailed_description', 'musical_analysis', 'creative_description']
@@ -193,7 +225,12 @@ class LLarkPromptGenerator:
             print(f"No audio files found in {gtzan_pop_dir}")
             return
         
-        print(f"Found {len(audio_files)} audio files")
+        # 限制文件数量
+        if max_files is not None:
+            audio_files = audio_files[:max_files]
+            print(f"Found {len(glob.glob(os.path.join(gtzan_pop_dir, '*.wav')))} audio files, processing first {len(audio_files)}")
+        else:
+            print(f"Found {len(audio_files)} audio files")
         
         # 创建输出目录
         os.makedirs(output_dir, exist_ok=True)
@@ -249,12 +286,12 @@ def main():
     parser = argparse.ArgumentParser(description="使用 LLark 为 GTZAN pop 音频生成 prompt")
     parser.add_argument(
         "--gtzan_pop_dir", 
-        default="/home/evev/diversity-eval/data/input/GTZAN_Dataset/Solo/genres_original/pop",
+        default="/home/hice1/xli3252/Desktop/diversity-eval/data/input/GTZAN_Dataset/Solo/genres_original/pop",
         help="GTZAN pop 音频目录路径"
     )
     parser.add_argument(
         "--output_dir",
-        default="/home/evev/diversity-eval/data/output/llark_prompts",
+        default="/home/hice1/xli3252/Desktop/diversity-eval/data/output/llark_prompts",
         help="输出目录"
     )
     parser.add_argument(
@@ -278,6 +315,12 @@ def main():
         "--demo_mode",
         action='store_true',
         help="演示模式（不需要实际模型）"
+    )
+    parser.add_argument(
+        "--max_files",
+        type=int,
+        default=None,
+        help="最大处理文件数量（用于测试）"
     )
     
     args = parser.parse_args()
@@ -328,7 +371,8 @@ def main():
         generator.process_gtzan_pop_directory(
             args.gtzan_pop_dir,
             args.output_dir,
-            args.prompt_types
+            args.prompt_types,
+            args.max_files
         )
 
 if __name__ == "__main__":
