@@ -4,3 +4,6 @@
 [submodule "external/basic-pitch-torch"]
 	path = external/basic-pitch-torch
 	url = https://github.com/gudgud96/basic-pitch-torch.git
+[submodule "external/YuE"]
+	path = external/YuE
+	url = https://github.com/multimodal-art-projection/YuE.git
