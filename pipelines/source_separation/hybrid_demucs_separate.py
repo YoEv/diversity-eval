@@ -93,7 +93,7 @@ def process_file(model, bundle_sr, in_root: Path, in_path: Path, out_dir: Path, 
 
 def main():
     parser = argparse.ArgumentParser(description="Hybrid Demucs source separation (torchaudio.pipelines)")
-    in_default = str(Path.home() / "scratch" / "datasets" / "GTZAN_Dataset" / "Data" / "genres_original")
+    in_default = "/home/hice1/xli3252/scratch/datasets/generated"
     parser.add_argument(
         "--input",
         type=str,
@@ -103,7 +103,7 @@ def main():
     parser.add_argument(
         "--output",
         type=str,
-        default="data/output/separated/GTZAN_Dataset",
+        default="/home/hice1/xli3252/scratch/data/output/separated/Qwen3_Omni_Prompt",
         help="输出分离结果文件夹",
     )
     parser.add_argument(
@@ -130,6 +130,12 @@ def main():
         default=".wav,.mp3,.flac",
         help="处理的文件扩展名，逗号分隔",
     )
+    parser.add_argument(
+        "--subdirs",
+        type=str,
+        default="",
+        help="仅处理输入根目录下指定子文件夹，逗号分隔；默认处理全部",
+    )
 
     args = parser.parse_args()
 
@@ -147,8 +153,12 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     exts = {e.strip().lower() for e in args.exts.split(",") if e.strip()}
+    target_subdirs = {d.strip() for d in args.subdirs.split(",") if d.strip()}
     files = []
     for root, _, fnames in os.walk(in_dir):
+        rel = Path(root).relative_to(in_dir)
+        if target_subdirs and (len(rel.parts) == 0 or rel.parts[0] not in target_subdirs):
+            continue
         for f in fnames:
             p = Path(root) / f
             if p.suffix.lower() in exts:

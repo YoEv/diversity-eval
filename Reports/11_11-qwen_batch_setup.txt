@@ -19,8 +19,7 @@ docker run --gpus all -v "$HOME/scratch/.cache/huggingface":/root/.cache/hugging
 
 
 
-Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption_test.py --device cuda --max-new-tokens 256 --fl
-ash-attn2
+Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption_test.py --device cuda --max-new-tokens 256 --flash-attn2
 multi-gpu don't need --force-gpu
 - Tried with 2 H100, 256GB CPU RAM
 - need to change source code of Qwen to be be with bfloat16, instead of the default float32
@@ -56,5 +55,26 @@ multi-gpu don't need --force-gpu
 
 
 python pipelines/prompt_generation/qwen3-omni/qwen_omni_prepare_prompts.py --input-root data/output/separated/GTZAN_Dataset/country --output-file omni_prompts_batch_hiphop.json --prompt "This is a vocal solo track from a source separated hiphop music, describe the tempo, main melody rhythm, style, emotions, main theme of the lyrics , and melodic contour of the piece. "
+
+export HF_HOME="/home/hice1/xli3252/scratch/hf-cache"
+export TRANSFORMERS_CACHE="/home/hice1/xli3252/scratch/hf-cache/transformers"
+Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption.py --device cuda --max-new-tokens 256 --flash-attn2
+
+python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption.py --input-json data/output/omni_prompt_input/omni_prompts_batch_blues.json --output-json data/output/omni_prompt_output/captions_batch_blues.json --device cuda --max-new-tokens 256 --flash-attn2 --repo-name "/root/.cache/huggingface/hub/models--Qwen--Qwen3-Omni-30B-A3B-Instruct/snapshots/26291f793822fb6be9555850f06dfe95f2d7e695"
+
+
+- Binding cache and code
+[xli3252@atl1-1-03-014-23-0 diversity-eval]$ apptainer exec --nv --cleanenv --bind "/storage/ice1/2/2/xli3252/.cache/huggingface":/root/.cache/huggingface --bind "$HOME/scratch/qwen3_omni_ws":/data/shared/Qwen3-Omni "$HOME/scratch/qwen3-omni-3-cu124.sif" bash
+Apptainer> export HF_HUB_OFFLINE=1
+Apptainer> export TRANSFORMERS_OFFLINE=1
+Apptainer> export HF_HOME=/root/.cache/huggingface
+Apptainer> export HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
+Apptainer> export TRANSFORMERS_CACHE=/root/.cache/huggingface/transformers
+Apptainer> python pipelines/prompt_generation/qwen3-omni/qwen_omni_batch_caption.py --input-json data/output/omni_prompt_input/omni_prompts_batch_blues.json --output-json data/output/omni_prompt_output/captions_batch_blues.json --device cuda --max-new-tokens 256
+
+
+
+
+
 
 
