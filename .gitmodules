@@ -7,3 +7,7 @@
 [submodule "external/YuE"]
 	path = external/YuE
 	url = https://github.com/multimodal-art-projection/YuE.git
+[submodule "vllm"]
+	path = vllm
+	url = https://github.com/wangxiongts/vllm.git
+	branch = qwen3_omni
