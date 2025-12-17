@@ -1,24 +1,36 @@
-# diversity-eval
+**Distributional Diversity Evaluation for Generative Music Models**
 
-A system-level framework for evaluating **distributional diversity** in generative music models.
-This repo contains the end-to-end pipeline (data processing → prompting/generation → analysis) and reports produced during development.
+A system-level, model-agnostic framework for evaluating **distributional diversity** in generative music systems, with a focus on tonal and melodic properties under in-distribution and out-of-distribution settings.
 
 ## Paper
 
-* **A Framework for Evaluating Distributional Diversity in Generative Music Models (PDF)**
-  [https://github.com/YoEv/diversity-eval/blob/snapshot1027/A%20Framework%20for%20Evaluating%20Distributional%20Diversity%20in%20Generative%20Music%20Models.pdf](https://github.com/YoEv/diversity-eval/blob/snapshot1027/A%20Framework%20for%20Evaluating%20Distributional%20Diversity%20in%20Generative%20Music%20Models.pdf)
+* **[A Framework for Evaluating Distributional Diversity in Generative Music Models](https://github.com/YoEv/diversity-eval/blob/snapshot1027/A%20Framework%20for%20Evaluating%20Distributional%20Diversity%20in%20Generative%20Music%20Models.pdf)**
 
-* External snapshot link (for sharing):
-  [https://github.com/YoEv/diversity-eval/blob/snapshot1027/A%20Framework%20for%20Evaluating%20Distributional%20Diversity%20in%20Generative%20Music%20Models.pdf](https://github.com/YoEv/diversity-eval/blob/snapshot1027/A%20Framework%20for%20Evaluating%20Distributional%20Diversity%20in%20Generative%20Music%20Models.pdf)
+## Method at a glance
+
+This project evaluates diversity as a **corpus-level property**, rather than a sample-level reconstruction objective.
+The framework operates by:
+
+1. Mapping real and generated audio into musically meaningful representations (e.g., key labels, symbolic main-melody features, learned embeddings).
+2. Constructing feature distributions over real and generated corpora.
+3. Comparing these distributions using appropriate diversity and divergence measures to quantify coverage, concentration, and drift.
+4. Analyzing robustness under domain shift (in-distribution vs out-of-distribution) and stability across repeated generations.
+
+Pairwise similarity measures are used only for stability or controllability analysis and are explicitly separated from distributional diversity evaluation.
+
+## Pipeline overview
+
+![Diversity evaluation pipeline](https://github.com/YoEv/diversity-eval/blob/snapshot1027/pipeline_figure.png)
+
+The pipeline integrates waveform processing, representation extraction, optional caption-based prompting and regeneration, and distribution-level analysis, while remaining agnostic to the underlying generative model architecture.
 
 ## What’s in this repo
 
-At a high level, the project evaluates diversity through a unified pipeline that supports:
+At a high level, the repository contains:
 
-* In-distribution vs out-of-distribution comparisons
-* Key-related diversity signals (distribution-level)
-* Melody-related diversity signals (symbolic- and embedding-level)
-* Scalable caption/prompt generation and batch processing
+* Data processing and evaluation pipelines for key and melodic diversity
+* Scripts for large-scale generation, captioning, and analysis
+* Reports and intermediate artifacts produced during development
 
 ## Repository structure (snapshot1027)
 
@@ -34,26 +46,15 @@ vllm/         # vLLM submodule
 .cache/       # local caches (environment-dependent)
 README_EXTERNAL.md
 README_PIPELINE.md
+pipeline_figure.png
 A Framework for Evaluating Distributional Diversity in Generative Music Models.pdf
 ```
 
-([GitHub][1])
-
-## Quick start
-
-This repo is organized around `pipelines/` (core logic) and `scripts/` (how you run it).
-For detailed, step-by-step instructions, see:
-
-* `README_PIPELINE.md`
-* `README_EXTERNAL.md` ([GitHub][1])
-
 ## Citation
 
-If you build on this work, please cite the paper PDF linked above (formal bibtex entry can be added here later).
+If you use this framework or build upon this work, please cite the paper linked above.
 
 ## Contact
 
-Xiaosha (Evelyne) Li
+Xiaosha Evelyne Li
 Georgia Institute of Technology
-
-[1]: https://github.com/YoEv/diversity-eval/tree/snapshot1027 "GitHub - YoEv/diversity-eval at snapshot1027"
