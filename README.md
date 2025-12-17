@@ -52,7 +52,7 @@ A Framework for Evaluating Distributional Diversity in Generative Music Models.p
 
 ## Citation
 
-If you use this framework or build upon this work, please cite the paper linked above.
+If you use this framework or build upon this work, please cite this repo.
 
 ## Contact
 
